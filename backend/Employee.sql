@@ -1,3 +1,5 @@
+DROP TABLE Employee;
+
 CREATE TABLE Employee (
     EmployeeID integer,
     PatientID integer NOT NULL,
