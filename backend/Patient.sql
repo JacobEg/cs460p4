@@ -1,9 +1,11 @@
+DROP TABLE Patient;
+
 CREATE TABLE Patient (
-    PatientID integer,
+    PatientID integer NOT NULL,
     FName varchar2(30),
     LName varchar2(30),
     BursarAcct integer,
-    InsuranceProvider varchar2(50),
+    InsuranceProvider varchar2(50), -- NULL = no insurance
     Birthday date,
     PRIMARY KEY(PatientID)
 );
