@@ -47,11 +47,11 @@ public class Backend {
 		}
 	}
 
-	public static boolean addPatient(String fName, String lName, String bursarNum, String insurance, String birthday){
+	public static int addPatient(String fName, String lName, String bursarNum, String insurance, String birthday){
 		Statement stmt = dbConnect.createStatement();
 		ResultSet answer = stmt.executeQuery("SELECT MAX(PatientID) AS pid FROM Patient");
 		int newPatientId;
-		if(answer.next()){ // make sure this works
+		if(answer.next()){ // make sure this works; there are records in table
 			newPatientId = answer.getInt("pid") + 1;
 		} else{
 			newPatientId = 1;
@@ -60,14 +60,17 @@ public class Backend {
 			String.format("INSERT INTO Patient VALUES (%d, '%s', '%s', %s, '%s', '%s')",
 				newPatientId, fName, lName, bursarNum, insurance, birthday));
 		stmt.close();
-		return rowsAffected != 0;
+		if(rowsAffected == 0){
+			return 0;
+		}
+		return newPatientId;
 	}
 
-	public static boolean addEmployee(int patientID, String acctNum, String routingNum){
+	public static int addEmployee(int patientID, String acctNum, String routingNum){
 		Statement stmt = dbConnect.createStatement();
 		ResultSet answer = stmt.executeQuery("SELECT MAX(EmployeeID) AS eid FROM Employee");
 		int newEmpID;
-		if(answer.next()){ // make sure this works
+		if(answer.next()){ // make sure this works; there are records in table
 			newEmpID = answer.getInt("eid") + 1;
 		} else{
 			newEmpID = 1;
@@ -76,34 +79,95 @@ public class Backend {
 			String.format("INSERT INTO Employee VALUES (%d, %d, %d, %d)",
 			newEmpID, patientID, acctNum, routingNum));
 		stmt.close();
-		return rowsAffected != 0;
+		if(rowsAffected == 0){
+			return 0;
+		}
+		return newEmpID;
 	}
 
-	public static boolean addAppointment(String checkinTime, String inPerson, String service, String empId, String patientID){
+	public static int addScheduled(String bookTime, String inPerson, String service, String empId, String patientID){
 		Statement stmt = dbConnect.createStatement();
 		ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment");
-		if(answer.next()){ // make sure this works
+		if(answer.next()){ // make sure this works; there are records in table
+			newApptNo = answer.getInt("ano") + 1;
+		} else{
+			newApptNo = 1;
+		}
+		int rowsAffected = stmt.executeUpdate(
+			String.format("INSERT INTO Appointment VALUES (%s, NULL, '%s', '%s', %s, %s)",
+			"" + newApptNo, inPerson, service, empId, patientID)
+		);
+		stmt.executeUpdate(
+			String.format("INSERT INTO Scheduled ('%s', %s)", bookTime, newApptNo)
+		);
+		stmt.close();
+		if(rowsAffected == 0){
+			return 0;
+		}
+		return newApptNo;
+	}
+
+	public static int addWalkin(String walkinTime, String inPerson, String service, String empId, String patientID, String isEmergency){
+		Statement stmt = dbConnect.createStatement();
+		ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment");
+		if(answer.next()){ // make sure this works; there are records in table
 			newApptNo = answer.getInt("ano") + 1;
 		} else{
 			newApptNo = 1;
 		}
 		int rowsAffected = stmt.executeUpdate(
 			String.format("INSERT INTO Appointment VALUES (%s, '%s', '%s', '%s', %s, %s)",
-			"" + newApptNo, checkinTime, inPerson, service, empId, patientID));
+			"" + newApptNo, walkinTime, inPerson, service, empId, patientID)
+		);
+		stmt.executeUpdate(
+			String.format("INSERT INTO Walkin ('%s', %s)", isEmergency, newApptNo)
+		);
+		stmt.close();
+		if(rowsAffected == 0){
+			return 0;
+		}
+		return newApptNo;
+	}
+
+	public static boolean updatePatient(int patientId, String attr, String newVal){
+		Statement stmt = dbConnect.createStatement();
+		String quote = "'";
+		if(attr.equalsIgnoreCase("bursaracct")){ // bursaracct is int, shouldn't be quoted
+			quote = "";
+		}
+		int rowsAffected = stmt.executeUpdate(
+			String.format("UPDATE Patient SET %s=%s%s%s WHERE PatientID=%d", attr, quote, newVal, quote, patientId)
+		);
 		stmt.close();
 		return rowsAffected != 0;
 	}
 
-	public static boolean updatePatient(){
-		return false;
-	}
-
-	public static boolean updateEmployee(){
-		return false;
+	public static boolean updateEmployee(int empId, String attr, String newVal){
+		Statement stmt = dbConnect.createStatement();
+		int rowsAffected = stmt.executeUpdate(
+			String.format("UPDATE Employee SET %s=%s WHERE EmployeeID=%d", attr, newVal, empId)
+		);
+		stmt.close();
+		return rowsAffected != 0;
 	}
 	
-	public static boolean updateAppointment(){
-		return false;
+	public static boolean updateAppointment(int apptNo, String attr, String newVal){
+		String table = "Appointment";
+		String quote = "'";
+		if(attr.equalsIgnoreCase("booktime")){
+			table = "Scheduled";
+		} else if(attr.equalsIgnoreCase("isemergency")){
+			table = "Walkin";
+		}
+		if(attr.equalsIgnoreCase("patientid") || attr.equalsIgnoreCase("employeeid")){ // these are int vals; no quotes
+			quote = "";
+		}
+		Statement stmt = dbConnect.createStatement();
+		int rowsAffected = stmt.executeUpdate(
+			String.format("UPDATE %s SET %s=%s%s%s WHERE ApptNo=%s", table, attr, quote, newVal, quote, apptNo)
+		);
+		stmt.close();
+		return rowsAffected != 0;
 	}
 
 	public static boolean deletePatient(int patientId){
@@ -111,7 +175,7 @@ public class Backend {
 		ResultSet answer = stmt.executeQuery(
 			String.format("SELECT COUNT(EmployeeID) FROM " + 
 			"Patient JOIN Employee USING (PatientID) WHERE PatientID=%d", patientId))
-		if(answer.next()){
+		if(answer.next()){ // patient exists in employee table
 			System.err.println("Patient exists in Employeee table, remove employee first.");
 			return false;
 		}
@@ -129,7 +193,9 @@ public class Backend {
 	
 	public static boolean deleteAppointment(int apptNo){
 		Statement stmt = dbConnect.createStatement();
-		int rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Patient Appointment ApptNo=%d", apptNo));
+		int rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Appointment WHERE ApptNo=%d", apptNo));
+		stmt.executeUpdate(String.format("DELETE FROM Walkin WHERE ApptNo=%d", apptNo);
+		stmt.executeUpdate(String.format("DELETE FROM Scheduled WHERE ApptNo=%d", apptNo);
 		stmt.close();
 		return rowsAffected != 0;
 	}
@@ -139,10 +205,47 @@ public class Backend {
 		ResultSet answer = stmt.executeQuery(
 			String.format("SELECT COUNT(PatientID) AS numPatient FROM Patient WHERE PatientId=%d", patientID)
 		);
-		answer.next(); // make sure this works
+		if(!answer.next()){ // make sure this works; there are no records in table
+			return false;
+		}
 		int count = answer.getInt("numPatient");
 		stmt.close();
 		return count > 0;
+	}
+
+	public static int scheduleImmunization(int patientID, String illness, String dateTime, int dose){
+		if(!patientExists(patientID)){
+			System.err.println("Must create patient record before scheduling appointment for them.");
+			return -1; // -1 == no patient
+		}
+		int apptNo = addScheduled(dateTime, "Y", "Immunization", "NULL", patientID);
+		Statement stmt = dbConnect.createStatement();
+		ResultSet answer = stmt.executeQuery("SELECT MAX(INo) As maxIno FROM Immunization");
+		int newIno;
+		if(answer.next()){ // make sure this works; there are records in table
+			newIno = answer.getInt("maxIno") + 1;
+		} else{
+			newIno = 1;
+		}
+		int rowsAffected = stmt.executeUpdate(
+			String.format("INSERT INTO Immunization VALUES " +
+			"(%d, %d, '%s')", newIno, apptNo, illness
+		);
+		int rc = 0; // not covid vaccine or the patient is under 50 or the dose != 3
+		if(illness.equalsIgnoreCase("covid-19")){
+			stmt.executeUpdate(
+				String.format("INSERT INTO Covid VALUES (%d, %d)", dose, newIno)
+			);
+			answer = stmt.executeQuery(
+				"SELECT PatientID FROM " +
+				"Patient WHERE PatientId=%d AND DATEDIFF(year, CONVERT(date, GETDATE()), Birthday) >= 50", patientID
+			);
+			if(answer.next() && dose == 3){ // patient is >= 50 and dose = 3
+				rc = 1; // covid vaccine and patient >= 50 and dose = 3
+			}
+		}
+		stmt.close();
+		return rc; 
 	}
 
 	public static ResultSet getPatientsScheduledForCOVIDImmunization(String date){ //q1
