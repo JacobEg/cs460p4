@@ -1,9 +1,9 @@
 /**
  * Frontend.java
- * Authors: Jacob Egestad and Cade Marks
+ * Authors: Jacob Egestad & Cade Marks
  * Course: CSC 460 - Database Design
- * Instructor: Dr. McCann
- * TAs: Haris Riaz and Aayush Pinto
+ * Instructor: Dr. Lester McCann
+ * TAs: Haris Riaz & Aayush Pinto
  * Assignment: Program #4: Database Design and Implementation
  * Due: May 2, 2022
  * Description: This file represents the frontend of Program 4. It produces a basic text interface
@@ -12,13 +12,17 @@
  *              first displaying a menu of options for inserting, deleting, updating records, and
  *              making five different preset SQL queries to retrieve information from the DB. Some
  *              of these SQL queries take input from the user, such as a specific date.
- * Operational Requirements: Java 16
+ * Operational Requirements: Java 16.0.2
  * Missing Features and Bugs: N/A
  */
 
 package frontend;
 
+import backend.Backend;
+
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Frontend {
     public static void main(String[] args) {
@@ -75,7 +79,8 @@ public class Frontend {
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         while (option != 4) {
             switch (option) {
-                case 1:
+                case 1: // insert Patient record
+                    // verifies patient fname is properly formatted
                     String fname;
                     while(true) {
                         System.out.print("Enter the patient's first name: ");
@@ -86,6 +91,8 @@ public class Frontend {
                             break;
                         }
                     }
+
+                    // verifies patient lname is properly formatted
                     String lname;
                     while(true) {
                         System.out.print("Enter the patient's last name: ");
@@ -96,20 +103,127 @@ public class Frontend {
                             break;
                         }
                     }
+
+                    // verifies patient bursar acct number is properly formatted
                     String bursar;
                     while(true) {
                         System.out.print("Enter the patient's bursar account number: ");
                         bursar = scanner.nextLine();
-                        if (fname.length() > 30) {
-                            System.out.println("\nPatient's first name must be 30 characters or less");
+                        try {
+                            int bursarInt = Integer.parseInt(bursar);
+                        } catch (Exception e) {
+                            System.out.println("Bursar account number must be an integer.");
+                            continue;
+                        }
+                        break;
+                    }
+
+                    // verifies patient insurance provider is properly formatted
+                    String provider;
+                    while(true) {
+                        System.out.print("Enter the patient's insurance provider: ");
+                        provider = scanner.nextLine();
+                        if (provider.length() > 50) {
+                            System.out.println("\nInsurance provider name must be 50 characters or less");
                         } else {
                             break;
                         }
                     }
 
-                case 2:
+                    // verifies patient birthdate is properly formatted
+                    String birth;
+                    Pattern date = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
+                    Matcher dateMatcher;
+                    while(true) {
+                        System.out.print("Enter the patient's birthdate (YYYY-MM-DD): ");
+                        birth = scanner.nextLine();
+                        dateMatcher = date.matcher(birth);
+                        if (!dateMatcher.find() || birth.length() != 10) {
+                            System.out.println("\nBirthdate must be in form 'YYYY-MM-DD'");
+                        } else {
+                            break;
+                        }
+                    }
 
-                case 3:
+                    // insert Patient record
+                    Backend.addPatient(fname, lname, bursar, provider, birth);
+
+                case 2: // insert Employee record
+                    // verifies employee's patientID is properly formatted and in Patient table
+                    int patientID;
+                    while(true) {
+                        System.out.print("Enter the employee's patientID: ");
+                        try {
+                            patientID = Integer.parseInt(scanner.nextLine());
+                        } catch (Exception e) {
+                            System.out.println("patientID must be an integer.");
+                            continue;
+                        }
+                        if (Backend.patientExists(patientID)) {
+                            break;
+                        } else {
+                            System.out.println("Employee's patientID must match an existing Patient record.");
+                        }
+                    }
+
+                    // verifies employee acct number is properly formatted
+                    String acct;
+                    while(true) {
+                        System.out.print("Enter the employee's direct deposit account number: ");
+                        acct = scanner.nextLine();
+                        try {
+                            int acctInt = Integer.parseInt(acct);
+                        } catch (Exception e) {
+                            System.out.println("Account number must be an integer.");
+                            continue;
+                        }
+                        break;
+                    }
+
+                    // verifies employee routing number is properly formatted
+                    String rout;
+                    while(true) {
+                        System.out.print("Enter the employee's direct deposit routing number: ");
+                        rout = scanner.nextLine();
+                        try {
+                            int acctInt = Integer.parseInt(rout);
+                        } catch (Exception e) {
+                            System.out.println("Routing number must be an integer.");
+                            continue;
+                        }
+                        break;
+                    }
+
+                    // insert Employee record
+                    Backend.addEmployee(patientID, acct, rout);
+
+                case 3: // insert Appointment record
+                    System.out.println("Is this a booked appointment or a walk-in appointment?\n  1. Booked\n  2. Walk-in");
+                    int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+                    switch(apptOption){
+                        case 1:
+                        case 2:
+                            // verifies Appointment check-in time is formatted as SQL DATETIME
+                            String checkIn;
+                            Pattern checkInDate = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
+                            Matcher checkInMatcher;
+                            while(true) {
+                                System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
+                                checkIn = scanner.nextLine();
+                                checkInMatcher = checkInDate.matcher(checkIn);
+                                if (!checkInMatcher.find() || checkIn.length() != 19) {
+                                    System.out.println("\nCheck-in must be in form 'YYYY-MM-DD HH:MI:SS'");
+                                } else {
+                                    break;
+                                }
+                            }
+                        default: //TODO
+                    }
+
+
+
+                    // insert Appointment record
+                    Backend.addAppointment();
 
                 case 4:
                     break;
@@ -136,17 +250,37 @@ public class Frontend {
         System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
+        boolean successfulDelete;
         while (option != 4) {
             switch (option) {
                 case 1:
-                    System.out.println("Enter a patient id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    while(true) {
+                        System.out.println("Enter a patient id: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        successfulDelete = Backend.deletePatient(id);
+                        if (successfulDelete)
+                            break;
+                        System.out.println("Patient id could not be found. Try a different id.");
+                    }
                 case 2:
-                    System.out.println("Enter an employee id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    while(true) {
+                        System.out.println("Enter an employee id: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        successfulDelete = Backend.deleteEmployee(id);
+                        if (successfulDelete)
+                            break;
+                        System.out.println("Employee id could not be found. Try a different id.");
+                    }
+
                 case 3:
-                    System.out.println("Enter an appointment id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    while(true) {
+                        System.out.println("Enter an appointment id: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        successfulDelete = Backend.deleteAppointment(id);
+                        if (successfulDelete)
+                            break;
+                        System.out.println("Appointment number could not be found. Try a different number.");
+                    }
                 case 4:
                     break;
                 default:
@@ -176,17 +310,46 @@ public class Frontend {
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
         String attribute; // attribute user wishes to update
+        boolean successfulUpdate;
+        String attr;
+        String value;
         while (option != 4) {
             switch (option) {
-                case 1:
-                    System.out.println("Enter a patient id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                case 1: //TODO
+                    while(true) {
+                        System.out.println("Enter a patient id: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        attr = scanner.nextLine();
+                        value = scanner.nextLine();
+                        successfulUpdate = Backend.updatePatient(id, attr, value);
+                        if (successfulUpdate)
+                            break;
+                        System.out.println("Patient id could not be found. Try a different id.");
+                    }
                 case 2:
-                    System.out.println("Enter an employee id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    while(true) {
+                        System.out.println("Enter an employee id: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        attr = scanner.nextLine();
+                        value = scanner.nextLine();
+                        successfulUpdate = Backend.updateEmployee(id, attr, value);
+                        if (successfulUpdate)
+                            break;
+                        System.out.println("Employee id could not be found. Try a different id.");
+                    }
+
                 case 3:
-                    System.out.println("Enter an appointment id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    while(true) {
+                        System.out.println("Enter an appointment number: ");
+                        id = Integer.parseInt(scanner.nextLine());
+                        attr = scanner.nextLine();
+                        value = scanner.nextLine();
+                        successfulUpdate = Backend.updateAppointment(id, attr, value);
+                        if (successfulUpdate)
+                            break;
+                        System.out.println("Appointment number could not be found. Try a different number.");
+                    }
+
                 case 4:
                     break;
                 default:
