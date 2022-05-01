@@ -201,6 +201,22 @@ public class Frontend {
                     System.out.println("Is this a booked appointment or a walk-in appointment?\n  1. Booked\n  2. Walk-in");
                     int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
 
+                    if (apptOption == 1) {
+                        checkImmun(scanner);
+                        while (true) {
+                            System.out.println("Is this appointment for an immunization? ('Y'/'N')");
+                            String immunAppt = scanner.nextLine();
+                            if (immunAppt.equals("Y")) {
+                                checkImmun(scanner);
+                                break;
+                            } else if (immunAppt.equals("N")) {
+                                break;
+                            } else {
+                                System.out.println("Only 'Y' and 'N' accepted for input");
+                            }
+                        }
+                    }
+
                     // verifies the value for inPerson is formatted correctly
                     String inPerson;
                     while(true) {
@@ -217,7 +233,7 @@ public class Frontend {
                         System.out.println("Enter the Campus Health Service for the appointment: ");
                         service = scanner.nextLine();
                         if (service.equals("CAPS") || service.equals("Immunization") ||
-                                service.equals("Laboratory & Testing") || service.equals("General Medicine")
+                                service.equals("Laboratory & Testing") || service.equals("General Medicine"))
                         break;
                         System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory & Testing', or 'General Medicine'.");
                     }
@@ -227,7 +243,7 @@ public class Frontend {
                     while(true) {
                         System.out.println("Enter the employeeID of the employee working the appointment: ");
                         employeeID = scanner.nextLine();
-                        if (employeeID.equals("NULL") || Backend.employeeExists(employeeID)) {
+                        if (employeeID.equals("NULL") || Backend.employeeExists(Integer.parseInt(employeeID))) {
                             break;
                         }
                         System.out.println("Employee could not be found.");
@@ -244,12 +260,9 @@ public class Frontend {
                         System.out.println("Patient could not be found.");
                     }
 
+                    // retrieves specific attributes depending on type of appointment
                     switch(apptOption){
                         case 1:
-                            // TODO add option within insert appointment for scheduleImmunization
-                            System.out.println("Is this appointment for an immunization? ('Y'/'N')");
-                            String immunAppt = scanner.nextLine();
-                            //------------------------------------------
 
                             // verifies Appointment booked time is formatted as SQL DATETIME
                             String bookDate;
@@ -459,18 +472,42 @@ public class Frontend {
             String date; // the date to be input by the user
             switch (option) {
                 case 1:
-                    System.out.println("Please enter a date: ");
-                    date = scanner.nextLine();
+                    while(true) {
+                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        date = scanner.nextLine();
+                        if (checkDate(date)) {
+                            Backend.getPatientsScheduledForCOVIDImmunization(date);
+                            break;
+                        }
+                        System.out.println("Date must be in form 'YYYY-MM-DD'");
+                    }
+
                 case 2:
-                    System.out.println("Please enter a date: ");
-                    date = scanner.nextLine();
+                    while(true) {
+                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        date = scanner.nextLine();
+                        if (checkDate(date)) {
+                            Backend.getPatientsWithScheduledAppts(date);
+                            break;
+                        }
+                        System.out.println("Date must be in form 'YYYY-MM-DD'");
+                    }
                 case 3:
-                    System.out.println("Please enter a date: ");
-                    date = scanner.nextLine();
+                    while(true) {
+                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        date = scanner.nextLine();
+                        if (checkDate(date)) {
+                            Backend.getStaffSchedule(date);
+                            break;
+                        }
+                        System.out.println("Date must be in form 'YYYY-MM-DD'");
+                    }
                 case 4:
-
+                    Backend.getCOVIDImmunizationStats();
                 case 5:
-
+                    System.out.println("Enter a type of immunization/illness to search for: ");
+                    String immunType = scanner.nextLine();
+                    Backend.getVaccinatedForIllness(immunType);
                 case 6:
                     break;
                 default:
@@ -483,6 +520,65 @@ public class Frontend {
                     option = Integer.parseInt(scanner.nextLine());
             }
         }
+    }
+
+    private static boolean checkDate(String date) {
+        // verifies patient date is properly formatted
+        Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
+        Matcher dateMatcher;
+        dateMatcher = datePattern.matcher(date);
+        return dateMatcher.find() && date.length() == 10;
+    }
+
+    private static void checkImmun(Scanner scanner) {
+        // verifies the value for patientID is formatted correctly
+        int patientID;
+        while(true) {
+            System.out.println("Enter the patientID of the patient attending the appointment: ");
+            try {
+                patientID = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("patientID must be an integer value.");
+                continue;
+            }
+            if (Backend.patientExists(patientID)) {
+                break;
+            }
+            System.out.println("Patient could not be found.");
+        }
+
+        System.out.println("Enter a type of immunization/illness to search for: ");
+        String immunType = scanner.nextLine();
+
+        // verifies Appointment booked time is formatted as SQL DATETIME
+        String bookDate;
+        Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
+        Matcher bookedMatcher;
+        while(true) {
+            System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
+            bookDate = scanner.nextLine();
+            bookedMatcher = bookDatePattern.matcher(bookDate);
+            if (!bookedMatcher.find() || bookDate.length() != 19) {
+                System.out.println("\nAppointment time must be in form 'YYYY-MM-DD HH:MI:SS'");
+            } else {
+                break;
+            }
+        }
+
+        // verifies dose is formatted as int
+        int dose;
+        while(true) {
+            System.out.print("Enter the dose number: ");
+            try {
+                dose = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("Dose number must be an integer value.");
+                continue;
+            }
+            break;
+        }
+
+        Backend.scheduleImmunization(patientID, immunType, bookDate, dose);
     }
 
 
