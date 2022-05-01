@@ -20,6 +20,7 @@ package frontend;
 
 import backend.Backend;
 
+import java.sql.ResultSet;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,7 @@ public class Frontend {
     public static void main(String[] args) {
         //Backend.init();
         promptUser();
+        //Backend.close();
     }
 
     /**
@@ -461,22 +463,33 @@ public class Frontend {
      * Post-conditions: N/A
      */
     private static void query(Scanner scanner) {
-        System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th dos"+
-                "es of the COVID-19 vaccine scheduled by a certain date.\n  2. Given a certain date, output wh"+
-                "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty"+
-                "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t"+
-                "he list of staff members working that day and a staff member's working hours.\n  4. Print the"+
-                " vaccine statistics of the two categories of patients (student, employees). \n  5. A query of your choice\n  6. Return to options menu");
+        System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th dos "+
+                "es of the COVID-19 vaccine scheduled by a certain date.\n  2. Given a certain date, output wh" +
+                "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty" +
+                "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t" +
+                "he list of staff members working that day and a staff member's working hours.\n  4. Print the" +
+                " vaccine statistics of the two categories of patients (student, employees). \n  5. Given an illnes, " +
+                "print the list of patients who have received a vaccination for the illness ordered by name\n  " +
+                "6. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         while (option != 6) {
             String date; // the date to be input by the user
             switch (option) {
                 case 1:
                     while(true) {
-                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
                         if (checkDate(date)) {
-                            Backend.getPatientsScheduledForCOVIDImmunization(date);
+                            ResultSet answer = Backend.getPatientsScheduledForCOVIDImmunization(date);
+                            System.out.println("Patients who have received their 2nd-4th COVID vaccine by this date\n" +
+                            "----------------------------------------------------------");
+                            try{
+                                while(answer.next()){
+                                    System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                                }
+                            } catch(Exception exception){
+                                System.err.println("Error fetching results for 1st query");
+                            }
                             break;
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
@@ -484,30 +497,77 @@ public class Frontend {
 
                 case 2:
                     while(true) {
-                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
                         if (checkDate(date)) {
-                            Backend.getPatientsWithScheduledAppts(date);
+                            ResultSet answer = Backend.getPatientsWithScheduledAppts(date);
+                            System.out.println("Patients with scheduled appointments on this day\n" +
+                            "------------------------------------------");
+                            try{
+                                while(answer.next()){
+                                    System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                                }
+                            } catch(Exception exception){
+                                System.err.println("Error fetching results for 2nd query");
+                            }
                             break;
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
                 case 3:
                     while(true) {
-                        System.out.println("Please enter a date (YYYY-MM-DD): ");
+                        System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
                         if (checkDate(date)) {
-                            Backend.getStaffSchedule(date);
+                            ResultSet answer = Backend.getStaffSchedule(date);
+                            System.out.println("Schedule of staff on this day\n-------------------------");
+                            try{
+                                while(answer.next()){
+                                    System.out.println(String.format(
+                                        "%s %s: %s -> %s",
+                                        answer.getString("FName"), answer.getString("LName"),
+                                        answer.getDate("StartTime").toString(), answer.getDate("EndTime").toString())
+                                    );
+                                }
+                            } catch(Exception exception){
+                                System.err.println("Error fetching results for 3rd query");
+                            }
                             break;
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
                 case 4:
-                    Backend.getCOVIDImmunizationStats();
+                    ResultSet[] answer = Backend.getCOVIDImmunizationStats();
+                    try {
+                        System.out.println("Student statistics\n-----------------");
+                        while(answer[0].next()){
+                            System.out.println(String.format(
+                                "%d people have received COVID-19 vaccine dose %d",
+                                answer[0].getInt("Patients"), answer[0].getString("DoseNo"))
+                            );
+                        }
+                        System.out.println("Employee statistics\n------------------");
+                        while(answer[1].next()){
+                            System.out.println(String.format(
+                                "%d people have received COVID-19 vaccine dose %d",
+                                answer[1].getInt("Patients"), answer[1].getString("DoseNo"))
+                            );
+                        }
+                    } catch (Exception exception) {
+                        
+                    }
                 case 5:
-                    System.out.println("Enter a type of immunization/illness to search for: ");
+                    System.out.println("Enter a type of immunization/illness to search for:");
                     String immunType = scanner.nextLine();
-                    Backend.getVaccinatedForIllness(immunType);
+                    ResultSet answer = Backend.getVaccinatedForIllness(immunType);
+                    System.out.println("People vaccinated for this illness\n---------------------");
+                    try {
+                        while(answer.next()){
+                            System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                        }
+                    } catch (Exception exception) {
+                        System.err.println("Error fetching results for 4th query");
+                    }
                 case 6:
                     break;
                 default:

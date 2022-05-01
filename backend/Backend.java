@@ -549,19 +549,25 @@ public class Backend {
 	/**
 	 * getCOVIDImmunizationStats: Get vaccinated statistings for covid (# of people with each dose)
 	 * for students and employees
-	 * @return ResultSet with results from query
+	 * @return ResultSets with results from queries 0th index is students, 1st index is employees
 	 * Pre-conditions: init has been called
 	 * Post-conditions: N/A
 	 */
-	public static ResultSet getCOVIDImmunizationStats(){ //q4
-		ResultSet answer = null; // for returning results from query
+	public static ResultSet[] getCOVIDImmunizationStats(){ //q4
+		ResultSet[] answer = {null, null}; // for returning results from query
 		try{
 			Statement stmt = dbConnect.createStatement(); //for querying db
-			answer = stmt.executeQuery(
-				"SELECT COUNT(LName),MAX(DoseNo) AS DoseNo FROM " +
+			answer[0] = stmt.executeQuery(
+				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
 				"Patient JOIN Appointment USING (PatientId) " +
 				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= GETDATE()"
+				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider<>'UA'"
+			);
+			answer[1] = stmt.executeQuery(
+				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
+				"Patient JOIN Appointment USING (PatientId) " +
+				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
+				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider='UA'"
 			);
 			stmt.close();
 		} catch(Exception exception){
