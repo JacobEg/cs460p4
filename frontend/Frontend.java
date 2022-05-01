@@ -77,6 +77,7 @@ public class Frontend {
     private static void insert(Scanner scanner) {
         System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int patientID;
         while (option != 4) {
             switch (option) {
                 case 1: // insert Patient record
@@ -150,7 +151,6 @@ public class Frontend {
 
                 case 2: // insert Employee record
                     // verifies employee's patientID is properly formatted and in Patient table
-                    int patientID;
                     while(true) {
                         System.out.print("Enter the employee's patientID: ");
                         try {
@@ -200,8 +200,85 @@ public class Frontend {
                 case 3: // insert Appointment record
                     System.out.println("Is this a booked appointment or a walk-in appointment?\n  1. Booked\n  2. Walk-in");
                     int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+
+                    // verifies the value for inPerson is formatted correctly
+                    String inPerson;
+                    while(true) {
+                        System.out.println("Is this appointment in person? ('Y'/'N')");
+                        inPerson = scanner.nextLine();
+                        if (inPerson.equals("Y") || inPerson.equals("N"))
+                            break;
+                        System.out.println("In-person status must be input as 'Y' or 'N'");
+                    }
+
+                    // verifies the value for service is formatted correctly
+                    String service;
+                    while(true) {
+                        System.out.println("Enter the Campus Health Service for the appointment: ");
+                        service = scanner.nextLine();
+                        if (service.equals("CAPS") || service.equals("Immunization") ||
+                                service.equals("Laboratory & Testing") || service.equals("General Medicine")
+                        break;
+                        System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory & Testing', or 'General Medicine'.");
+                    }
+
+                    // verifies the value for employeeID is formatted correctly
+                    String employeeID;
+                    while(true) {
+                        System.out.println("Enter the employeeID of the employee working the appointment: ");
+                        employeeID = scanner.nextLine();
+                        if (employeeID.equals("NULL") || Backend.employeeExists(employeeID)) {
+                            break;
+                        }
+                        System.out.println("Employee could not be found.");
+                    }
+
+                    // verifies the value for patientID is formatted correctly
+                    String patientid;
+                    while(true) {
+                        System.out.println("Enter the patientID of the patient attending the appointment: ");
+                        patientid = scanner.nextLine();
+                        if (Backend.patientExists(Integer.parseInt(patientid))) {
+                            break;
+                        }
+                        System.out.println("Patient could not be found.");
+                    }
+
                     switch(apptOption){
                         case 1:
+                            // TODO add option within insert appointment for scheduleImmunization
+                            System.out.println("Is this appointment for an immunization? ('Y'/'N')");
+                            String immunAppt = scanner.nextLine();
+                            //------------------------------------------
+
+                            // verifies Appointment booked time is formatted as SQL DATETIME
+                            String bookDate;
+                            Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
+                            Matcher bookedMatcher;
+                            while(true) {
+                                System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
+                                bookDate = scanner.nextLine();
+                                bookedMatcher = bookDatePattern.matcher(bookDate);
+                                if (!bookedMatcher.find() || bookDate.length() != 19) {
+                                    System.out.println("\nAppointment time must be in form 'YYYY-MM-DD HH:MI:SS'");
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            // verifies emergency status of Appointment is correctly formatted
+                            String isEmergency;
+                            while(true) {
+                                System.out.println("Is this appointment an emergency? ('Y'/'N')");
+                                isEmergency = scanner.nextLine();
+                                if (isEmergency.equals("Y") || isEmergency.equals("N"))
+                                    break;
+                                System.out.println("Emergency status must be input as 'Y' or 'N'");
+                            }
+
+                            // insert walk-in appointment record
+                            Backend.addWalkin(bookDate, inPerson, service, employeeID, patientid, isEmergency);
+
                         case 2:
                             // verifies Appointment check-in time is formatted as SQL DATETIME
                             String checkIn;
@@ -217,13 +294,13 @@ public class Frontend {
                                     break;
                                 }
                             }
-                        default: //TODO
+
+                            // insert walk-in appointment record
+                            Backend.addScheduled(checkIn, inPerson, service, employeeID, patientid);
+
+                        default:
+                            System.out.println("Invalid appointment option.");
                     }
-
-
-
-                    // insert Appointment record
-                    Backend.addAppointment();
 
                 case 4:
                     break;
@@ -315,7 +392,7 @@ public class Frontend {
         String value;
         while (option != 4) {
             switch (option) {
-                case 1: //TODO
+                case 1:
                     while(true) {
                         System.out.println("Enter a patient id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -372,11 +449,11 @@ public class Frontend {
      */
     private static void query(Scanner scanner) {
         System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th dos"+
-                        "es of the COVID-19 vaccine scheduled by a certain date.\n  2. Given a certain date, output wh"+
-                        "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty"+
-                        "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t"+
-                        "he list of staff members working that day and a staff member's working hours.\n  4. Print the"+
-                        " vaccine statistics of the two categories of patients (student, employees). \n  5. A query of your choice\n  6. Return to options menu");
+                "es of the COVID-19 vaccine scheduled by a certain date.\n  2. Given a certain date, output wh"+
+                "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty"+
+                "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t"+
+                "he list of staff members working that day and a staff member's working hours.\n  4. Print the"+
+                " vaccine statistics of the two categories of patients (student, employees). \n  5. A query of your choice\n  6. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         while (option != 6) {
             String date; // the date to be input by the user
