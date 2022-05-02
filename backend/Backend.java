@@ -404,7 +404,7 @@ public class Backend {
 	 * Post-condition: shift has been added
 	 */
 	public static boolean addShift(int empId, String startTime, String endTime, String service){
-		if(!employeeExists(empID)){
+		if(!employeeExists(empId)){
 			System.err.println("Employee with an id of " + empId + " does not exist");
 			return false;
 		}
@@ -536,7 +536,7 @@ public class Backend {
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName,StartTime,EndTime FROM " +
-				"Patient JOIN Employee USING (PatientID) JOIN Shift USING (EmployeeID) "
+				"Patient JOIN Employee USING (PatientID) JOIN Shift USING (EmployeeID) " +
 				"WHERE CONVERT(date, StartTime)='%s' OR CONVERT(date, ENDTime)='%s'", date, date)
 			);
 			stmt.close();
