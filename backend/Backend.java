@@ -412,7 +412,7 @@ public class Backend {
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Shift VALUES (%d, '%s', '%s', '%s')", empId, startTime, endTime, service)
+				String.format("INSERT INTO Shift VALUES (%d, TIMESTAMP '%s', TIMESTAMP '%s', '%s')", empId, startTime, endTime, service)
 			);
 			stmt.close();
 		} catch (Exception exception){
@@ -459,8 +459,8 @@ public class Backend {
 				);
 				answer = stmt.executeQuery(
 					String.format(
-						"SELECT PatientID FROM " +
-						"Patient WHERE PatientId=%d AND DATEDIFF(year, CONVERT(date, GETDATE()), Birthday) >= 50", patientID
+						"SELECT PatientID FROM Patient WHERE PatientId=%d AND " +
+						"floor(months_between(CAST(SYSDATE AS DATE), Birthday) / 12) >= 50", patientID
 					)
 				);
 				if(answer.next() && dose == 3){ // patient is >= 50 and dose = 3
@@ -490,7 +490,7 @@ public class Backend {
 				String.format("SELECT distinct Patient.PatientID,FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Immunization USING (ApptNo) " + 
 				"JOIN Covid USING (INo) JOIN Scheduled USING (ApptNo)" +
-				"WHERE CONVERT(date, BookTime) <= '%s' AND DoseNo > 1 AND DoseNo < 5", date));
+				"WHERE CAST(BookTime AS DATE) <= '%s' AND DoseNo > 1 AND DoseNo < 5", date));
 			stmt.close();
 		} catch(Exception exception){
 			return null;
@@ -513,7 +513,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Scheduled USING (ApptNo) " +
-				"WHERE CONVERT(date, BookTime) = '%s' " +
+				"WHERE CAST(BookTime AS DATE) = DATE '%s' " +
 				"GROUP BY Service ORDER BY BookTime", date)
 			);
 			stmt.close();
@@ -537,7 +537,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName,StartTime,EndTime FROM " +
 				"Patient JOIN Employee USING (PatientID) JOIN Shift USING (EmployeeID) " +
-				"WHERE CONVERT(date, StartTime)='%s' OR CONVERT(date, ENDTime)='%s'", date, date)
+				"WHERE CAST(StartTime AS DATE) = DATE '%s' OR CAST(EndTime AS DATE) = DATE '%s'", date, date)
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -561,13 +561,13 @@ public class Backend {
 				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
 				"Patient JOIN Appointment USING (PatientId) " +
 				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider<>'UA'"
+				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider<>'UA'"
 			);
 			answer[1] = stmt.executeQuery(
 				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
 				"Patient JOIN Appointment USING (PatientId) " +
 				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider='UA'"
+				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider='UA'"
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -591,7 +591,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Immunization USING (ApptNo) " +
-				"WHERE IType='%s' AND CheckinTime <= GETDATE()" +
+				"WHERE IType='%s' AND CheckinTime <= SYSDATE" +
 				"ORDER BY Lname,FName", illness)
 			);
 			stmt.close();
