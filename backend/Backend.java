@@ -62,16 +62,20 @@ public class Backend {
 		int newPatientId = 0; // newly-inserted patient's id
 		int rowsAffected = 0; // the number of rows affected by insert statement
 		try{
+			System.out.println("addPatient\n	creating statement and assigning id num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(PatientID) AS pid FROM Patient"); // for getting patient id
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	Getting new id for patient by adding 1");
 				newPatientId = answer.getInt("pid") + 1;
 			} else{
+				System.out.println("	Assigning patient id to 1");
 				newPatientId = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Patient VALUES (%d, '%s', '%s', %s, '%s', DATE '%s')",
 					newPatientId, fName, lName, bursarNum, insurance, birthday));
+			System.out.println("	Rows affected in: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
 			return 0;
@@ -95,17 +99,21 @@ public class Backend {
 		int newEmpID = 0; // newly-inserted employee's id number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try {
+			System.out.println("addEmployee\n	creating statement and assigining id num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(EmployeeID) AS eid FROM Employee"); // for getting new id num
 			
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	Getting new id for emp by adding 1");
 				newEmpID = answer.getInt("eid") + 1;
 			} else{
+				System.out.println("	Setting emp id to 1");
 				newEmpID = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Employee VALUES (%d, %d, %d, %d)",
 				newEmpID, patientID, acctNum, routingNum));
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
 			return 0;
@@ -131,17 +139,21 @@ public class Backend {
 		int newApptNo = 0; // newly created appointment's number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try{
+			System.out.println("addScheduled\n	creating statement and assigining appt num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment"); // for getting new id number
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	getting new appt no by adding 1");
 				newApptNo = answer.getInt("ano") + 1;
 			} else{
+				System.out.println("	setting appt no to 1");
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Appointment VALUES (%s, NULL, '%s', '%s', %s, %s)",
 				"" + newApptNo, inPerson, service, empId, patientID)
 			);
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
 				String.format("INSERT INTO Scheduled (TIMESTAMP '%s', %s)", bookTime, newApptNo)
 			);
@@ -170,17 +182,21 @@ public class Backend {
 		int newApptNo = 0; // newly created appointment's number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try{
+			System.out.println("addWalkin\n	creating statement and assigining appt num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment"); // for getting new id number
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	adding 1 to get appt no");
 				newApptNo = answer.getInt("ano") + 1;
 			} else{
+				System.out.println("	setting appt no to 1");
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Appointment VALUES (%s, TIMESTAMP '%s', '%s', '%s', %s, %s)",
 				"" + newApptNo, walkinTime, inPerson, service, empId, patientID)
 			);
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
 				String.format("INSERT INTO Walkin ('%s', %s)", isEmergency, newApptNo)
 			);
