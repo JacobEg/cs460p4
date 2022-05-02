@@ -79,12 +79,12 @@ public class Frontend {
     private static void insert(Scanner scanner) {
         System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
-        int patientID;
+        int patientID; // patientID attribute
         while (option != 4) {
             switch (option) {
                 case 1: // insert Patient record
                     // verifies patient fname is properly formatted
-                    String fname;
+                    String fname; // Patient's first name
                     while(true) {
                         System.out.print("Enter the patient's first name: ");
                         fname = scanner.nextLine();
@@ -96,7 +96,7 @@ public class Frontend {
                     }
 
                     // verifies patient lname is properly formatted
-                    String lname;
+                    String lname; // Patient's last name
                     while(true) {
                         System.out.print("Enter the patient's last name: ");
                         lname = scanner.nextLine();
@@ -108,12 +108,12 @@ public class Frontend {
                     }
 
                     // verifies patient bursar acct number is properly formatted
-                    String bursar;
+                    String bursar; // Patient's bursar account number
                     while(true) {
                         System.out.print("Enter the patient's bursar account number: ");
                         bursar = scanner.nextLine();
                         try {
-                            int bursarInt = Integer.parseInt(bursar);
+                            int bursarInt = Integer.parseInt(bursar); // Integer form of bursar acct number
                         } catch (Exception e) {
                             System.out.println("Bursar account number must be an integer.");
                             continue;
@@ -122,7 +122,7 @@ public class Frontend {
                     }
 
                     // verifies patient insurance provider is properly formatted
-                    String provider;
+                    String provider; // Patient's insurance provider
                     while(true) {
                         System.out.print("Enter the patient's insurance provider: ");
                         provider = scanner.nextLine();
@@ -134,9 +134,9 @@ public class Frontend {
                     }
 
                     // verifies patient birthdate is properly formatted
-                    String birth;
-                    Pattern date = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
-                    Matcher dateMatcher;
+                    String birth; // Patient's birthdate
+                    Pattern date = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d"); // regex pattern for SQL date type
+                    Matcher dateMatcher; // SQL date type pattern matcher
                     while(true) {
                         System.out.print("Enter the patient's birthdate (YYYY-MM-DD): ");
                         birth = scanner.nextLine();
@@ -169,12 +169,12 @@ public class Frontend {
                     }
 
                     // verifies employee acct number is properly formatted
-                    String acct;
+                    String acct; // Employee's direct deposit account number
                     while(true) {
                         System.out.print("Enter the employee's direct deposit account number: ");
                         acct = scanner.nextLine();
                         try {
-                            int acctInt = Integer.parseInt(acct);
+                            int acctInt = Integer.parseInt(acct); // Integer form of acct number
                         } catch (Exception e) {
                             System.out.println("Account number must be an integer.");
                             continue;
@@ -183,12 +183,12 @@ public class Frontend {
                     }
 
                     // verifies employee routing number is properly formatted
-                    String rout;
+                    String rout; // Employee's direct deposit routing number
                     while(true) {
                         System.out.print("Enter the employee's direct deposit routing number: ");
                         rout = scanner.nextLine();
                         try {
-                            int acctInt = Integer.parseInt(rout);
+                            int acctInt = Integer.parseInt(rout); // Integer form of routing number
                         } catch (Exception e) {
                             System.out.println("Routing number must be an integer.");
                             continue;
@@ -207,7 +207,7 @@ public class Frontend {
                         checkImmun(scanner);
                         while (true) {
                             System.out.println("Is this appointment for an immunization? ('Y'/'N')");
-                            String immunAppt = scanner.nextLine();
+                            String immunAppt = scanner.nextLine(); // Whether appointment is for immunization
                             if (immunAppt.equals("Y")) {
                                 checkImmun(scanner);
                                 break;
@@ -220,7 +220,7 @@ public class Frontend {
                     }
 
                     // verifies the value for inPerson is formatted correctly
-                    String inPerson;
+                    String inPerson; // Whether appointment is in person (or remote)
                     while(true) {
                         System.out.println("Is this appointment in person? ('Y'/'N')");
                         inPerson = scanner.nextLine();
@@ -230,18 +230,18 @@ public class Frontend {
                     }
 
                     // verifies the value for service is formatted correctly
-                    String service;
+                    String service; // Name of Campus Health service
                     while(true) {
                         System.out.println("Enter the Campus Health Service for the appointment: ");
                         service = scanner.nextLine();
                         if (service.equals("CAPS") || service.equals("Immunization") ||
-                                service.equals("Laboratory & Testing") || service.equals("General Medicine"))
+                                service.equals("Laboratory and Testing") || service.equals("General Medicine"))
                         break;
-                        System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory & Testing', or 'General Medicine'.");
+                        System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory and Testing', or 'General Medicine'.");
                     }
 
                     // verifies the value for employeeID is formatted correctly
-                    String employeeID;
+                    String employeeID; // Employee ID of employee working the appointment
                     while(true) {
                         System.out.println("Enter the employeeID of the employee working the appointment: ");
                         employeeID = scanner.nextLine();
@@ -252,7 +252,7 @@ public class Frontend {
                     }
 
                     // verifies the value for patientID is formatted correctly
-                    String patientid;
+                    String patientid; // Patient ID of patient attending appointment
                     while(true) {
                         System.out.println("Enter the patientID of the patient attending the appointment: ");
                         patientid = scanner.nextLine();
@@ -265,11 +265,10 @@ public class Frontend {
                     // retrieves specific attributes depending on type of appointment
                     switch(apptOption){
                         case 1:
-
                             // verifies Appointment booked time is formatted as SQL DATETIME
-                            String bookDate;
-                            Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                            Matcher bookedMatcher;
+                            String bookDate; // Time/date appointment is booked for
+                            Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
+                            Matcher bookedMatcher; // regex pattern matcher for datetime
                             while(true) {
                                 System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
                                 bookDate = scanner.nextLine();
@@ -282,7 +281,7 @@ public class Frontend {
                             }
 
                             // verifies emergency status of Appointment is correctly formatted
-                            String isEmergency;
+                            String isEmergency; // Whether appointment is an emergency
                             while(true) {
                                 System.out.println("Is this appointment an emergency? ('Y'/'N')");
                                 isEmergency = scanner.nextLine();
@@ -296,9 +295,9 @@ public class Frontend {
 
                         case 2:
                             // verifies Appointment check-in time is formatted as SQL DATETIME
-                            String checkIn;
-                            Pattern checkInDate = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                            Matcher checkInMatcher;
+                            String checkIn; // check-in time/date of appointment
+                            Pattern checkInDate = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
+                            Matcher checkInMatcher; // regex pattern matcher for datetime
                             while(true) {
                                 System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
                                 checkIn = scanner.nextLine();
@@ -342,10 +341,11 @@ public class Frontend {
         System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
-        boolean successfulDelete;
+        boolean successfulDelete; // whether record was deleted successfully
         while (option != 4) {
             switch (option) {
                 case 1:
+                    // verifies existence of patient in DB
                     while(true) {
                         System.out.println("Enter a patient id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -355,6 +355,7 @@ public class Frontend {
                         System.out.println("Patient id could not be found. Try a different id.");
                     }
                 case 2:
+                    // verifies existence of employee in DB
                     while(true) {
                         System.out.println("Enter an employee id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -365,6 +366,7 @@ public class Frontend {
                     }
 
                 case 3:
+                    // verifies existence of appointment in DB
                     while(true) {
                         System.out.println("Enter an appointment id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -374,46 +376,6 @@ public class Frontend {
                         System.out.println("Appointment number could not be found. Try a different number.");
                     }
 
-                    String startTime;
-                    Pattern startDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                    Matcher startTimeMatcher;
-                    while(true) {
-                        System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
-                        startTime = scanner.nextLine();
-                        startTimeMatcher = startDateTime.matcher(startTime);
-                        if (!startTimeMatcher.find() || startTime.length() != 19) {
-                            System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
-                        } else {
-                            break;
-                        }
-                    }
-
-                    String endTime;
-                    Pattern endDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                    Matcher endTimeMatcher;
-                    while(true) {
-                        System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
-                        endTime = scanner.nextLine();
-                        endTimeMatcher = endDateTime.matcher(endTime);
-                        if (!endTimeMatcher.find() || endTime.length() != 19) {
-                            System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
-                        } else {
-                            break;
-                        }
-                    }
-
-                    // verifies the value for service is formatted correctly
-                    String service;
-                    while(true) {
-                        System.out.println("Enter the Campus Health Service for the appointment: ");
-                        service = scanner.nextLine();
-                        if (service.equals("CAPS") || service.equals("Immunization") ||
-                                service.equals("Laboratory & Testing") || service.equals("General Medicine"))
-                            break;
-                        System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory & Testing', or 'General Medicine'.");
-                    }
-
-                    Backend.addShift(id, startTime, endTime, service);
                 case 4:
                     break;
                 default:
@@ -498,9 +460,47 @@ public class Frontend {
                         }
                         System.out.println("Employee not found. Try a different id.");
                      }
+                    String startTime;
+                    Pattern startDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
+                    Matcher startTimeMatcher;
                     while(true) {
-
+                        System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
+                        startTime = scanner.nextLine();
+                        startTimeMatcher = startDateTime.matcher(startTime);
+                        if (!startTimeMatcher.find() || startTime.length() != 19) {
+                            System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
+                        } else {
+                            break;
+                        }
                     }
+
+                    String endTime;
+                    Pattern endDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
+                    Matcher endTimeMatcher;
+                    while(true) {
+                        System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
+                        endTime = scanner.nextLine();
+                        endTimeMatcher = endDateTime.matcher(endTime);
+                        if (!endTimeMatcher.find() || endTime.length() != 19) {
+                            System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // verifies the value for service is formatted correctly
+                    String service;
+                    while(true) {
+                        System.out.println("Enter the Campus Health Service for the appointment: ");
+                        service = scanner.nextLine();
+                        if (service.equals("CAPS") || service.equals("Immunization") ||
+                                service.equals("Laboratory and Testing") || service.equals("General Medicine"))
+                            break;
+                        System.out.println("Service must be 'CAPS', 'Immunization', 'Laboratory and Testing', or 'General Medicine'.");
+                    }
+
+                    // add shift to table
+                    Backend.addShift(id, startTime, endTime, service);
                 case 5:
                     break;
                 default:
