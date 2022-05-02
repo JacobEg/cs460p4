@@ -8,3 +8,5 @@ CREATE TABLE Immunization (
 );
 
 INSERT INTO Immunization VALUES (1, 2, 'COVID-19');
+
+GRANT ALL PRIVILEGES ON Immunization TO PUBLIC;

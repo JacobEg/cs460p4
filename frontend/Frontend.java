@@ -614,7 +614,7 @@ public class Frontend {
                             );
                         }
                     } catch (Exception exception) {
-                        
+                        System.err.print("Error fetching results for 4th query");
                     }
                 case 5:
                     System.out.println("Enter a type of immunization/illness to search for:");
@@ -626,7 +626,7 @@ public class Frontend {
                             System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
                         }
                     } catch (Exception exception) {
-                        System.err.println("Error fetching results for 4th query");
+                        System.err.println("Error fetching results for 5th query");
                     }
                 case 6:
                     break;

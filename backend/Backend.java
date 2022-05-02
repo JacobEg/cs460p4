@@ -70,7 +70,7 @@ public class Backend {
 				newPatientId = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Patient VALUES (%d, '%s', '%s', %s, '%s', '%s')",
+				String.format("INSERT INTO Patient VALUES (%d, '%s', '%s', %s, '%s', DATE '%s')",
 					newPatientId, fName, lName, bursarNum, insurance, birthday));
 			stmt.close();
 		} catch(Exception exception){
@@ -143,7 +143,7 @@ public class Backend {
 				"" + newApptNo, inPerson, service, empId, patientID)
 			);
 			stmt.executeUpdate(
-				String.format("INSERT INTO Scheduled ('%s', %s)", bookTime, newApptNo)
+				String.format("INSERT INTO Scheduled (TIMESTAMP '%s', %s)", bookTime, newApptNo)
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -178,7 +178,7 @@ public class Backend {
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Appointment VALUES (%s, '%s', '%s', '%s', %s, %s)",
+				String.format("INSERT INTO Appointment VALUES (%s, TIMESTAMP '%s', '%s', '%s', %s, %s)",
 				"" + newApptNo, walkinTime, inPerson, service, empId, patientID)
 			);
 			stmt.executeUpdate(
