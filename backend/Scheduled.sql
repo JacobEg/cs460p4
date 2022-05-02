@@ -1,10 +1,12 @@
 DROP TABLE Scheduled;
 
 CREATE TABLE Scheduled (
-    BookTime datetime,
+    BookTime timestamp,
     ApptNo integer NOT NULL
 );
 
-INSERT INTO Scheduled VALUES ('2022-05-14 08:30:00', 1);
-INSERT INTO Scheduled VALUES ('2022-05-13 10:15:00', 2);
-INSERT INTO Scheduled VALUES ('2022-05-10 07:30:00', 3);
+INSERT INTO Scheduled VALUES (TIMESTAMP '2022-05-14 08:30:00', 1);
+INSERT INTO Scheduled VALUES (TIMESTAMP '2022-05-13 10:15:00', 2);
+INSERT INTO Scheduled VALUES (TIMESTAMP '2022-05-10 07:30:00', 3);
+
+GRANT ALL PRIVILEGES ON Scheduled TO PUBLIC;
