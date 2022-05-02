@@ -50,12 +50,16 @@ public class Frontend {
             switch (option) {
                 case 1: // Insert record
                     insert(scanner);
+                    break;
                 case 2: // Delete record
                     delete(scanner);
+                    break;
                 case 3: // Update record
                     update(scanner);
+                    break;
                 case 4: // Query database
                     query(scanner);
+                    break;
                 default:
                     System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1:EXIT");
                     System.out.println("Choose an option from the menu: ");
@@ -150,6 +154,7 @@ public class Frontend {
 
                     // insert Patient record
                     Backend.addPatient(fname, lname, bursar, provider, birth);
+                    break;
 
                 case 2: // insert Employee record
                     // verifies employee's patientID is properly formatted and in Patient table
@@ -198,6 +203,7 @@ public class Frontend {
 
                     // insert Employee record
                     Backend.addEmployee(patientID, acct, rout);
+                    break;
 
                 case 3: // insert Appointment record
                     System.out.println("Is this a booked appointment or a walk-in appointment?\n  1. Booked\n  2. Walk-in");
@@ -264,7 +270,7 @@ public class Frontend {
 
                     // retrieves specific attributes depending on type of appointment
                     switch(apptOption){
-                        case 1:
+                        case 1: // Insert booked appointment
                             // verifies Appointment booked time is formatted as SQL DATETIME
                             String bookDate; // Time/date appointment is booked for
                             Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
@@ -292,8 +298,9 @@ public class Frontend {
 
                             // insert walk-in appointment record
                             Backend.addWalkin(bookDate, inPerson, service, employeeID, patientid, isEmergency);
+                            break;
 
-                        case 2:
+                        case 2: // Insert walk-in appointment
                             // verifies Appointment check-in time is formatted as SQL DATETIME
                             String checkIn; // check-in time/date of appointment
                             Pattern checkInDate = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
@@ -311,12 +318,14 @@ public class Frontend {
 
                             // insert walk-in appointment record
                             Backend.addScheduled(checkIn, inPerson, service, employeeID, patientid);
+                            break;
 
                         default:
                             System.out.println("Invalid appointment option.");
                     }
+                    break;
 
-                case 4:
+                case 4: // Return to options menu
                     break;
                 default:
                     System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
@@ -354,6 +363,8 @@ public class Frontend {
                             break;
                         System.out.println("Patient id could not be found. Try a different id.");
                     }
+                    break;
+
                 case 2:
                     // verifies existence of employee in DB
                     while(true) {
@@ -364,6 +375,7 @@ public class Frontend {
                             break;
                         System.out.println("Employee id could not be found. Try a different id.");
                     }
+                    break;
 
                 case 3:
                     // verifies existence of appointment in DB
@@ -375,6 +387,7 @@ public class Frontend {
                             break;
                         System.out.println("Appointment number could not be found. Try a different number.");
                     }
+                    break;
 
                 case 4:
                     break;
@@ -404,10 +417,9 @@ public class Frontend {
         System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Add shift\n 5. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
-        String attribute; // attribute user wishes to update
-        boolean successfulUpdate;
-        String attr;
-        String value;
+        boolean successfulUpdate;  // whether record was successfully updated
+        String attr; // attribute user wishes to update
+        String value; // new value of record
         while (option != 4) {
             switch (option) {
                 case 1:
@@ -423,6 +435,7 @@ public class Frontend {
                             break;
                         System.out.println("Patient id could not be found. Try a different id.");
                     }
+                    break;
                 case 2:
                     while(true) {
                         System.out.println("Enter an employee id: ");
@@ -436,6 +449,7 @@ public class Frontend {
                             break;
                         System.out.println("Employee id could not be found. Try a different id.");
                     }
+                    break;
 
                 case 3:
                     while(true) {
@@ -450,6 +464,7 @@ public class Frontend {
                             break;
                         System.out.println("Appointment number could not be found. Try a different number.");
                     }
+                    break;
 
                 case 4:
                     while(true) {
@@ -501,6 +516,8 @@ public class Frontend {
 
                     // add shift to table
                     Backend.addShift(id, startTime, endTime, service);
+                    break;
+
                 case 5:
                     break;
                 default:
@@ -533,7 +550,7 @@ public class Frontend {
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         while (option != 6) {
             String date; // the date to be input by the user
-            ResultSet answer;
+            ResultSet answer; // JDBC response to query
             switch (option) {
                 case 1:
                     while(true) {
@@ -554,6 +571,7 @@ public class Frontend {
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
+                    break;
 
                 case 2:
                     while(true) {
@@ -574,6 +592,8 @@ public class Frontend {
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
+                    break;
+
                 case 3:
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
@@ -596,6 +616,8 @@ public class Frontend {
                         }
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
+                    break;
+
                 case 4:
                     ResultSet[] answers = Backend.getCOVIDImmunizationStats();
                     try {
@@ -616,6 +638,8 @@ public class Frontend {
                     } catch (Exception exception) {
                         System.err.print("Error fetching results for 4th query");
                     }
+                    break;
+
                 case 5:
                     System.out.println("Enter a type of immunization/illness to search for:");
                     String immunType = scanner.nextLine();
@@ -628,6 +652,8 @@ public class Frontend {
                     } catch (Exception exception) {
                         System.err.println("Error fetching results for 5th query");
                     }
+                    break;
+
                 case 6:
                     break;
                 default:
