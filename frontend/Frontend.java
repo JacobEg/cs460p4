@@ -537,24 +537,24 @@ public class Frontend {
                         System.out.println("Date must be in form 'YYYY-MM-DD'");
                     }
                 case 4:
-                    ResultSet[] answer = Backend.getCOVIDImmunizationStats();
+                    ResultSet[] answers = Backend.getCOVIDImmunizationStats();
                     try {
                         System.out.println("Student statistics\n-----------------");
-                        while(answer[0].next()){
+                        while(answers[0].next()){
                             System.out.println(String.format(
                                 "%d people have received COVID-19 vaccine dose %d",
-                                answer[0].getInt("Patients"), answer[0].getString("DoseNo"))
+                                answers[0].getInt("Patients"), answers[0].getString("DoseNo"))
                             );
                         }
                         System.out.println("Employee statistics\n------------------");
-                        while(answer[1].next()){
+                        while(answers[1].next()){
                             System.out.println(String.format(
                                 "%d people have received COVID-19 vaccine dose %d",
-                                answer[1].getInt("Patients"), answer[1].getString("DoseNo"))
+                                answers[1].getInt("Patients"), answers[1].getString("DoseNo"))
                             );
                         }
                     } catch (Exception exception) {
-                        
+                        System.err.print("Error fetching results for 4th query");
                     }
                 case 5:
                     System.out.println("Enter a type of immunization/illness to search for:");
@@ -566,7 +566,7 @@ public class Frontend {
                             System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
                         }
                     } catch (Exception exception) {
-                        System.err.println("Error fetching results for 4th query");
+                        System.err.println("Error fetching results for 5th query");
                     }
                 case 6:
                     break;
