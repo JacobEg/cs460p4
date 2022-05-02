@@ -636,7 +636,7 @@ public class Frontend {
                             );
                         }
                     } catch (Exception exception) {
-                        System.err.print("Error fetching results for 4th query");
+                        System.err.println("Error fetching results for 4th query");
                     }
                     break;
 
