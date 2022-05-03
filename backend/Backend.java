@@ -312,16 +312,16 @@ public class Backend {
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery( // for making sure employee has already been deleted
-				String.format("SELECT COUNT(EmployeeID) FROM " + 
-				"Patient JOIN Employee USING (PatientID) WHERE PatientID=%d", patientId));
-			if(answer.next()){ // patient exists in employee table
+				String.format("SELECT PatientID FROM " + 
+				"Employee WHERE PatientID=%d", patientId));
+			if(answer.next() && answer.getInt("PatientID") == patientId){ // patient exists in employee table
 				System.err.println("Patient exists in Employeee table, remove employee first.");
 				return false;
 			}
 			rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Patient WHERE PatientId=%d", patientId));
 			stmt.close();
 		} catch(Exception exception){
-			exception.printStackTrace();
+			//exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -341,7 +341,7 @@ public class Backend {
 			rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Employee WHERE EmployeeId=%d", empId));
 			stmt.close();
 		} catch(Exception exception){
-			exception.printStackTrace();
+			//exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -377,22 +377,21 @@ public class Backend {
 	 * Post-condition: n/a
 	 */
 	public static boolean patientExists(int patientID){
-		int count = 0; // used for checking if patient exists
+		boolean result = false; // for returning after querying
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery( // for setting count
-				String.format("SELECT COUNT(PatientID) AS numPatient FROM Patient WHERE PatientId=%d", patientID)
+				String.format("SELECT PatientID FROM Patient WHERE PatientId=%d", patientID)
 			);
-			if(!answer.next()){ // make sure this works; there are no records in table
-				return false;
+			if(answer.next() && answer.getInt("PatientID") == patientID){ // make sure this works; there are no records in table
+				result = true;
 			}
-			count = answer.getInt("numPatient");
 			stmt.close();
 		} catch(Exception exception){
 			exception.printStackTrace();
 			return false;
 		}
-		return count > 0;
+		return result;
 	}
 
 	/**
@@ -403,22 +402,22 @@ public class Backend {
 	 * Post-condition: n/a
 	 */
 	public static boolean employeeExists(int empID){
-		int count = 0; // used for checking if employee exists
+		boolean result = false; // for returning after query
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery( // for setting count
-				String.format("SELECT COUNT(EmployeeID) AS numEmp FROM Employee WHERE EmployeeID=%d", empID)
+				String.format("SELECT EmployeeID FROM Employee WHERE EmployeeID=%d", empID)
 			);
-			if(!answer.next()){ // make sure this works; there are no records in table
-				return false;
+			if(answer.next() && answer.getInt("EmployeeID") == empID){ // make sure this works; there are no records in table
+				result = true;
 			}
-			count = answer.getInt("numEmp");
+			//count = answer.getInt("numEmp");
 			stmt.close();
 		} catch(Exception exception){
 			exception.printStackTrace();
 			return false;
 		}
-		return count > 0;
+		return result;
 	}
 
 	/**
