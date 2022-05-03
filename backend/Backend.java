@@ -112,7 +112,7 @@ public class Backend {
 				newEmpID = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Employee VALUES (%d, %d, %d, %d)",
+				String.format("INSERT INTO Employee VALUES (%d, %d, %s, %s)",
 				newEmpID, patientID, acctNum, routingNum));
 			System.out.println("	rows affected: " + rowsAffected);
 			stmt.close();
@@ -152,12 +152,12 @@ public class Backend {
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Appointment VALUES (%s, NULL, '%s', '%s', %s, %s)",
-				"" + newApptNo, inPerson, service, empId, patientID)
+				String.format("INSERT INTO Appointment VALUES (%d, NULL, '%s', '%s', %s, %s)",
+				newApptNo, inPerson, service, empId, patientID)
 			);
 			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
-				String.format("INSERT INTO Scheduled (TIMESTAMP '%s', %s)", bookTime, newApptNo)
+				String.format("INSERT INTO Scheduled VALUES (TIMESTAMP '%s', %s)", bookTime, newApptNo)
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -196,12 +196,12 @@ public class Backend {
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Appointment VALUES (%s, TIMESTAMP '%s', '%s', '%s', %s, %s)",
-				"" + newApptNo, walkinTime, inPerson, service, empId, patientID)
+				String.format("INSERT INTO Appointment VALUES (%d, TIMESTAMP '%s', '%s', '%s', %s, %s)",
+				newApptNo, walkinTime, inPerson, service, empId, patientID)
 			);
 			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
-				String.format("INSERT INTO Walkin ('%s', %s)", isEmergency, newApptNo)
+				String.format("INSERT INTO Walkin VALUES ('%s', %d)", isEmergency, newApptNo)
 			);
 			stmt.close();
 		} catch(Exception exception){
