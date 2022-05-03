@@ -62,16 +62,20 @@ public class Backend {
 		int newPatientId = 0; // newly-inserted patient's id
 		int rowsAffected = 0; // the number of rows affected by insert statement
 		try{
+			System.out.println("addPatient\n	creating statement and assigning id num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(PatientID) AS pid FROM Patient"); // for getting patient id
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	Getting new id for patient by adding 1");
 				newPatientId = answer.getInt("pid") + 1;
 			} else{
+				System.out.println("	Assigning patient id to 1");
 				newPatientId = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Patient VALUES (%d, '%s', '%s', %s, '%s', DATE '%s')",
 					newPatientId, fName, lName, bursarNum, insurance, birthday));
+			System.out.println("	Rows affected in: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
 			return 0;
@@ -95,17 +99,21 @@ public class Backend {
 		int newEmpID = 0; // newly-inserted employee's id number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try {
+			System.out.println("addEmployee\n	creating statement and assigining id num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(EmployeeID) AS eid FROM Employee"); // for getting new id num
 			
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	Getting new id for emp by adding 1");
 				newEmpID = answer.getInt("eid") + 1;
 			} else{
+				System.out.println("	Setting emp id to 1");
 				newEmpID = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Employee VALUES (%d, %d, %d, %d)",
 				newEmpID, patientID, acctNum, routingNum));
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
 			return 0;
@@ -131,17 +139,21 @@ public class Backend {
 		int newApptNo = 0; // newly created appointment's number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try{
+			System.out.println("addScheduled\n	creating statement and assigining appt num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment"); // for getting new id number
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	getting new appt no by adding 1");
 				newApptNo = answer.getInt("ano") + 1;
 			} else{
+				System.out.println("	setting appt no to 1");
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Appointment VALUES (%s, NULL, '%s', '%s', %s, %s)",
 				"" + newApptNo, inPerson, service, empId, patientID)
 			);
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
 				String.format("INSERT INTO Scheduled (TIMESTAMP '%s', %s)", bookTime, newApptNo)
 			);
@@ -170,17 +182,21 @@ public class Backend {
 		int newApptNo = 0; // newly created appointment's number
 		int rowsAffected = 0; // number of rows affected by insert statement
 		try{
+			System.out.println("addWalkin\n	creating statement and assigining appt num");
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(ApptNo) AS ano FROM Appointment"); // for getting new id number
 			if(answer.next()){ // make sure this works; there are records in table
+				System.out.println("	adding 1 to get appt no");
 				newApptNo = answer.getInt("ano") + 1;
 			} else{
+				System.out.println("	setting appt no to 1");
 				newApptNo = 1;
 			}
 			rowsAffected = stmt.executeUpdate(
 				String.format("INSERT INTO Appointment VALUES (%s, TIMESTAMP '%s', '%s', '%s', %s, %s)",
 				"" + newApptNo, walkinTime, inPerson, service, empId, patientID)
 			);
+			System.out.println("	rows affected: " + rowsAffected);
 			stmt.executeUpdate(
 				String.format("INSERT INTO Walkin ('%s', %s)", isEmergency, newApptNo)
 			);
@@ -412,7 +428,7 @@ public class Backend {
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			rowsAffected = stmt.executeUpdate(
-				String.format("INSERT INTO Shift VALUES (%d, '%s', '%s', '%s')", empId, startTime, endTime, service)
+				String.format("INSERT INTO Shift VALUES (%d, TIMESTAMP '%s', TIMESTAMP '%s', '%s')", empId, startTime, endTime, service)
 			);
 			stmt.close();
 		} catch (Exception exception){
@@ -459,8 +475,8 @@ public class Backend {
 				);
 				answer = stmt.executeQuery(
 					String.format(
-						"SELECT PatientID FROM " +
-						"Patient WHERE PatientId=%d AND DATEDIFF(year, CONVERT(date, GETDATE()), Birthday) >= 50", patientID
+						"SELECT PatientID FROM Patient WHERE PatientId=%d AND " +
+						"floor(months_between(CAST(SYSDATE AS DATE), Birthday) / 12) >= 50", patientID
 					)
 				);
 				if(answer.next() && dose == 3){ // patient is >= 50 and dose = 3
@@ -490,7 +506,7 @@ public class Backend {
 				String.format("SELECT distinct Patient.PatientID,FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Immunization USING (ApptNo) " + 
 				"JOIN Covid USING (INo) JOIN Scheduled USING (ApptNo)" +
-				"WHERE CONVERT(date, BookTime) <= '%s' AND DoseNo > 1 AND DoseNo < 5", date));
+				"WHERE CAST(BookTime AS DATE) <= '%s' AND DoseNo > 1 AND DoseNo < 5", date));
 			stmt.close();
 		} catch(Exception exception){
 			return null;
@@ -513,7 +529,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Scheduled USING (ApptNo) " +
-				"WHERE CONVERT(date, BookTime) = '%s' " +
+				"WHERE CAST(BookTime AS DATE) = DATE '%s' " +
 				"GROUP BY Service ORDER BY BookTime", date)
 			);
 			stmt.close();
@@ -537,7 +553,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName,StartTime,EndTime FROM " +
 				"Patient JOIN Employee USING (PatientID) JOIN Shift USING (EmployeeID) " +
-				"WHERE CONVERT(date, StartTime)='%s' OR CONVERT(date, ENDTime)='%s'", date, date)
+				"WHERE CAST(StartTime AS DATE) = DATE '%s' OR CAST(EndTime AS DATE) = DATE '%s'", date, date)
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -561,13 +577,13 @@ public class Backend {
 				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
 				"Patient JOIN Appointment USING (PatientId) " +
 				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider<>'UA'"
+				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider<>'UA'"
 			);
 			answer[1] = stmt.executeQuery(
 				"SELECT COUNT(Patient.PatientID) AS Patients,MAX(DoseNo) AS DoseNo FROM " +
 				"Patient JOIN Appointment USING (PatientId) " +
 				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= GETDATE() AND InsuranceProvider='UA'"
+				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider='UA'"
 			);
 			stmt.close();
 		} catch(Exception exception){
@@ -591,7 +607,7 @@ public class Backend {
 			answer = stmt.executeQuery(
 				String.format("SELECT FName,LName FROM " +
 				"Patient JOIN Appointment USING (PatientID) JOIN Immunization USING (ApptNo) " +
-				"WHERE IType='%s' AND CheckinTime <= GETDATE()" +
+				"WHERE IType='%s' AND CheckinTime <= SYSDATE" +
 				"ORDER BY Lname,FName", illness)
 			);
 			stmt.close();

@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 
 public class Frontend {
     public static void main(String[] args) {
-        //Backend.init();
+        Backend.init();
         promptUser();
-        //Backend.close();
+        Backend.close();
     }
 
     /**
@@ -211,12 +211,11 @@ public class Frontend {
                     int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
 
                     if (apptOption == 1) {
-                        checkImmun(scanner);
                         while (true) {
                             System.out.println("Is this appointment for an immunization? ('Y'/'N')");
                             String immunAppt = scanner.nextLine(); // Whether appointment is for immunization
                             if (immunAppt.equals("Y")) {
-                                checkImmun(scanner);
+                                schedImmun(scanner);
                                 break;
                             } else if (immunAppt.equals("N")) {
                                 break;
@@ -352,7 +351,7 @@ public class Frontend {
         boolean successfulDelete; // whether record was deleted successfully
         while (option != 4) {
             switch (option) {
-                case 1:
+                case 1: // Delete patient record
                     // verifies existence of patient in DB
                     while(true) {
                         System.out.println("Enter a patient id: ");
@@ -364,7 +363,7 @@ public class Frontend {
                     }
                     break;
 
-                case 2:
+                case 2: // Delete employee record
                     // verifies existence of employee in DB
                     while(true) {
                         System.out.println("Enter an employee id: ");
@@ -376,7 +375,7 @@ public class Frontend {
                     }
                     break;
 
-                case 3:
+                case 3: // Delete appointment record
                     // verifies existence of appointment in DB
                     while(true) {
                         System.out.println("Enter an appointment id: ");
@@ -419,7 +418,8 @@ public class Frontend {
         String value; // new value of record
         while (option != 5) {
             switch (option) {
-                case 1:
+                case 1: // update a patient record
+                    // verifies patient record is successfully updated
                     while(true) {
                         System.out.println("Enter a patient id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -433,7 +433,8 @@ public class Frontend {
                         System.out.println("Patient id could not be found. Try a different id.");
                     }
                     break;
-                case 2:
+                case 2: // update an employee record
+                    // verifies employee record is successfully updated
                     while(true) {
                         System.out.println("Enter an employee id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -448,7 +449,8 @@ public class Frontend {
                     }
                     break;
 
-                case 3:
+                case 3: // update an appointment record
+                    // verifies appointment record is successfully updated
                     while(true) {
                         System.out.println("Enter an appointment number: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -463,7 +465,8 @@ public class Frontend {
                     }
                     break;
 
-                case 4:
+                case 4: // add an employee shift to schedule
+                    // verifies employee id exists in table
                     while(true) {
                         System.out.println("Enter an employee id: ");
                         id = Integer.parseInt(scanner.nextLine());
@@ -472,9 +475,11 @@ public class Frontend {
                         }
                         System.out.println("Employee not found. Try a different id.");
                      }
-                    String startTime;
-                    Pattern startDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                    Matcher startTimeMatcher;
+
+                    // verifies startTime is properly formatted
+                    String startTime; // starting time of employee shift
+                    Pattern startDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
+                    Matcher startTimeMatcher; // regex pattern matcher for datetime
                     while(true) {
                         System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
                         startTime = scanner.nextLine();
@@ -486,9 +491,10 @@ public class Frontend {
                         }
                     }
 
-                    String endTime;
-                    Pattern endDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-                    Matcher endTimeMatcher;
+                    // verifies startTime is properly formatted
+                    String endTime; // end time of employee shift
+                    Pattern endDateTime = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
+                    Matcher endTimeMatcher; // regex pattern matcher for datetime
                     while(true) {
                         System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
                         endTime = scanner.nextLine();
@@ -501,7 +507,7 @@ public class Frontend {
                     }
 
                     // verifies the value for service is formatted correctly
-                    String service;
+                    String service; // Name of Campus Health service employee works for in shift
                     while(true) {
                         System.out.println("Enter the Campus Health Service for the appointment: ");
                         service = scanner.nextLine();
@@ -515,7 +521,7 @@ public class Frontend {
                     Backend.addShift(id, startTime, endTime, service);
                     break;
 
-                case 5:
+                case 5: // return to options menu
                     break;
                 default:
                     System.out.println("Invalid option. Please choose one of the following: ");
@@ -551,7 +557,7 @@ public class Frontend {
             String date; // the date to be input by the user
             ResultSet answer; // JDBC response to query
             switch (option) {
-                case 1:
+                case 1: // Query 1
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
@@ -572,7 +578,7 @@ public class Frontend {
                     }
                     break;
 
-                case 2:
+                case 2: // Query 2
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
@@ -593,7 +599,7 @@ public class Frontend {
                     }
                     break;
 
-                case 3:
+                case 3: // Query 3
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
                         date = scanner.nextLine();
@@ -617,8 +623,8 @@ public class Frontend {
                     }
                     break;
 
-                case 4:
-                    ResultSet[] answers = Backend.getCOVIDImmunizationStats();
+                case 4: // Query 4
+                    ResultSet[] answers = Backend.getCOVIDImmunizationStats(); // array of JSON query results
                     try {
                         System.out.println("Student statistics\n-----------------");
                         while(answers[0].next()){
@@ -635,13 +641,13 @@ public class Frontend {
                             );
                         }
                     } catch (Exception exception) {
-                        System.err.print("Error fetching results for 4th query");
+                        System.err.println("Error fetching results for 4th query");
                     }
                     break;
 
-                case 5:
+                case 5: // Query 5
                     System.out.println("Enter a type of immunization/illness to search for:");
-                    String immunType = scanner.nextLine();
+                    String immunType = scanner.nextLine(); // Name of immunization
                     answer = Backend.getVaccinatedForIllness(immunType);
                     System.out.println("People vaccinated for this illness\n---------------------");
                     try {
@@ -652,7 +658,6 @@ public class Frontend {
                         System.err.println("Error fetching results for 5th query");
                     }
                     break;
-
                 default:
                     System.out.println("Invalid option. Please choose one of the following: ");
             }
@@ -666,17 +671,33 @@ public class Frontend {
         }
     }
 
+    /**
+     * checkDate: Checks if a string matches the form of SQL's date time
+     *
+     * @param date The string being checked
+     * @return void
+     * Pre-conditions: N/A
+     * Post-conditions: date is confirmed to be in form 'YYYY-MM-DD'
+     */
     private static boolean checkDate(String date) {
         // verifies patient date is properly formatted
-        Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
-        Matcher dateMatcher;
+        Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d"); // regex pattern for date
+        Matcher dateMatcher; // regex pattern matcher for date
         dateMatcher = datePattern.matcher(date);
         return dateMatcher.find() && date.length() == 10;
     }
 
-    private static void checkImmun(Scanner scanner) {
+    /**
+     * schedImmun: Schedules an immunization appointment for a patient.
+     *
+     * @param scanner Scanner for user input
+     * @return void
+     * Pre-conditions: N/A
+     * Post-conditions: N/A
+     */
+    private static void schedImmun(Scanner scanner) {
         // verifies the value for patientID is formatted correctly
-        int patientID;
+        int patientID; // Patient ID of patient whose appointment is being scheduled
         while(true) {
             System.out.println("Enter the patientID of the patient attending the appointment: ");
             try {
@@ -692,12 +713,12 @@ public class Frontend {
         }
 
         System.out.println("Enter a type of immunization/illness to search for: ");
-        String immunType = scanner.nextLine();
+        String immunType = scanner.nextLine(); // Name of immunization
 
         // verifies Appointment booked time is formatted as SQL DATETIME
-        String bookDate;
-        Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-        Matcher bookedMatcher;
+        String bookDate; // booking/scheduling date/time of appointment
+        Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
+        Matcher bookedMatcher; // regex pattern matcher for datetime
         while(true) {
             System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
             bookDate = scanner.nextLine();
@@ -710,7 +731,7 @@ public class Frontend {
         }
 
         // verifies dose is formatted as int
-        int dose;
+        int dose; // number of immunization dose
         while(true) {
             System.out.print("Enter the dose number: ");
             try {
@@ -722,8 +743,8 @@ public class Frontend {
             break;
         }
 
+        // insert immunization appointment
         Backend.scheduleImmunization(patientID, immunType, bookDate, dose);
     }
-
 
 }
