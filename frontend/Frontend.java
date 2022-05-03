@@ -61,10 +61,11 @@ public class Frontend {
                     query(scanner);
                     break;
                 default:
-                    System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1:EXIT");
-                    System.out.println("Choose an option from the menu: ");
-                    option = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Invalid option. Please choose one of the following: ");
             }
+            System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1:EXIT");
+            System.out.println("Choose an option from the menu: ");
+            option = Integer.parseInt(scanner.nextLine());
         }
         scanner.close();
     }
@@ -324,14 +325,12 @@ public class Frontend {
                             System.out.println("Invalid appointment option.");
                     }
                     break;
-
-                case 4: // Return to options menu
-                    break;
                 default:
-                    System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
-                    System.out.println("Choose an option from the menu: ");
-                    option = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Invalid option. Please choose one of the following: ");
             }
+            System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
+            System.out.println("Choose an option from the menu: ");
+            option = Integer.parseInt(scanner.nextLine());
         }
     }
 
@@ -388,14 +387,12 @@ public class Frontend {
                         System.out.println("Appointment number could not be found. Try a different number.");
                     }
                     break;
-
-                case 4:
-                    break;
                 default:
-                    System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
-                    System.out.println("Choose an option from the menu: ");
-                    option = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Invalid option. Please choose one of the following: ");
             }
+            System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
+            System.out.println("Choose an option from the menu: ");
+            option = Integer.parseInt(scanner.nextLine());
         }
     }
 
@@ -420,7 +417,7 @@ public class Frontend {
         boolean successfulUpdate;  // whether record was successfully updated
         String attr; // attribute user wishes to update
         String value; // new value of record
-        while (option != 4) {
+        while (option != 5) {
             switch (option) {
                 case 1:
                     while(true) {
@@ -521,10 +518,12 @@ public class Frontend {
                 case 5:
                     break;
                 default:
-                    System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
-                    System.out.println("Choose an option from the menu: ");
-                    option = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Invalid option. Please choose one of the following: ");
+
             }
+            System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
+            System.out.println("Choose an option from the menu: ");
+            option = Integer.parseInt(scanner.nextLine());
         }
     }
 
@@ -654,17 +653,16 @@ public class Frontend {
                     }
                     break;
 
-                case 6:
-                    break;
                 default:
-                    System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th doses of the COVID-19 vaccine scheduled by a certain date.\n" +
-                            "  2. Given a certain date, output which patients had a non-walk-in appointment. Sort in order by appointment time and group by type of service.\n" +
-                            "  3. Print the schedule of staff given a certain date . A schedule contains the list of staff members working that day and a staff member's working hours.\n" +
-                            "  4. Print the vaccine statistics of the two categories of patients (student, employees). \n" +
-                            "  5. A query of your choice\n  6. Return to options menu");
-                    System.out.println("Choose an option from the menu: ");
-                    option = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Invalid option. Please choose one of the following: ");
             }
+            System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th doses of the COVID-19 vaccine scheduled by a certain date.\n" +
+                    "  2. Given a certain date, output which patients had a non-walk-in appointment. Sort in order by appointment time and group by type of service.\n" +
+                    "  3. Print the schedule of staff given a certain date . A schedule contains the list of staff members working that day and a staff member's working hours.\n" +
+                    "  4. Print the vaccine statistics of the two categories of patients (student, employees). \n" +
+                    "  5. A query of your choice\n  6. Return to options menu");
+            System.out.println("Choose an option from the menu: ");
+            option = Integer.parseInt(scanner.nextLine());
         }
     }
 
