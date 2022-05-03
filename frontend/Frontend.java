@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 
 public class Frontend {
     public static void main(String[] args) {
-        //Backend.init();
+        Backend.init();
         promptUser();
-        //Backend.close();
+        Backend.close();
     }
 
     /**
