@@ -363,38 +363,29 @@ public class Frontend {
             switch (option) {
                 case 1: // Delete patient record
                     // verifies existence of patient in DB
-                    while(true) {
-                        System.out.println("Enter a patient id: ");
-                        id = Integer.parseInt(scanner.nextLine());
-                        successfulDelete = Backend.deletePatient(id);
-                        if (successfulDelete)
-                            break;
-                        System.out.println("Patient id could not be found. Try a different id.");
-                    }
+                    System.out.println("Enter a patient id: ");
+                    id = Integer.parseInt(scanner.nextLine());
+                    successfulDelete = Backend.deletePatient(id);
+                    if (!successfulDelete)
+                        System.out.println("Failed to delete patient.");
                     break;
 
                 case 2: // Delete employee record
                     // verifies existence of employee in DB
-                    while(true) {
-                        System.out.println("Enter an employee id: ");
-                        id = Integer.parseInt(scanner.nextLine());
-                        successfulDelete = Backend.deleteEmployee(id);
-                        if (successfulDelete)
-                            break;
+                    System.out.println("Enter an employee id: ");
+                    id = Integer.parseInt(scanner.nextLine());
+                    successfulDelete = Backend.deleteEmployee(id);
+                    if (!successfulDelete)
                         System.out.println("Employee id could not be found. Try a different id.");
-                    }
                     break;
 
                 case 3: // Delete appointment record
                     // verifies existence of appointment in DB
-                    while(true) {
-                        System.out.println("Enter an appointment id: ");
-                        id = Integer.parseInt(scanner.nextLine());
-                        successfulDelete = Backend.deleteAppointment(id);
-                        if (successfulDelete)
-                            break;
+                    System.out.println("Enter an appointment id: ");
+                    id = Integer.parseInt(scanner.nextLine());
+                    successfulDelete = Backend.deleteAppointment(id);
+                    if (!successfulDelete)
                         System.out.println("Appointment number could not be found. Try a different number.");
-                    }
                     break;
                 default:
                     System.out.println("Invalid option. Please choose one of the following: ");
