@@ -222,9 +222,10 @@ public class Frontend {
                     int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
 
                     if (apptOption == 1) {
+                        String immunAppt;
                         while (true) {
                             System.out.println("Is this appointment for an immunization? ('Y'/'N')");
-                            String immunAppt = scanner.nextLine(); // Whether appointment is for immunization
+                             immunAppt = scanner.nextLine(); // Whether appointment is for immunization
                             if (immunAppt.equals("Y")) {
                                 schedImmun(scanner);
                                 break;
@@ -236,7 +237,8 @@ public class Frontend {
                                 immunAppt = scanner.nextLine();
                             }
                         }
-                        break;
+                        if (immunAppt.equals("Y"))
+                            break;
                     }
 
                     // verifies the value for inPerson is formatted correctly
@@ -300,18 +302,8 @@ public class Frontend {
                                 }
                             }
 
-                            // verifies emergency status of Appointment is correctly formatted
-                            String isEmergency; // Whether appointment is an emergency
-                            while(true) {
-                                System.out.println("Is this appointment an emergency? ('Y'/'N')");
-                                isEmergency = scanner.nextLine();
-                                if (isEmergency.equals("Y") || isEmergency.equals("N"))
-                                    break;
-                                System.out.println("Emergency status must be input as 'Y' or 'N'");
-                            }
-
-                            // insert walk-in appointment record
-                            newID = Backend.addWalkin(bookDate, inPerson, service, employeeID, patientid, isEmergency);
+                            // insert booked appointment record
+                            newID = Backend.addScheduled(bookDate, inPerson, service, employeeID, patientid);
                             System.out.println("Appointment added. New appointment number: " + newID);
                             break;
 
@@ -331,8 +323,18 @@ public class Frontend {
                                 }
                             }
 
+                            // verifies emergency status of Appointment is correctly formatted
+                            String isEmergency; // Whether appointment is an emergency
+                            while(true) {
+                                System.out.println("Is this appointment an emergency? ('Y'/'N')");
+                                isEmergency = scanner.nextLine();
+                                if (isEmergency.equals("Y") || isEmergency.equals("N"))
+                                    break;
+                                System.out.println("Emergency status must be input as 'Y' or 'N'");
+                            }
+
                             // insert walk-in appointment record
-                            newID = Backend.addScheduled(checkIn, inPerson, service, employeeID, patientid);
+                            newID = Backend.addWalkin(checkIn, inPerson, service, employeeID, patientid, isEmergency);
                             System.out.println("Appointment added. New appointment number: " + newID);
                             break;
 
