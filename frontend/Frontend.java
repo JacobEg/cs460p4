@@ -68,12 +68,12 @@ public class Frontend {
                 case 4: // Query database
                     query(scanner);
                     break;
+                case -1: // EXIT
+                    scanner.close();
+                    return;
                 default:
                     System.out.println("Invalid option. Please choose one of the following: ");
             }
-            System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1:EXIT");
-            System.out.println("Choose an option from the menu: ");
-            option = Integer.parseInt(scanner.nextLine());
         }
         scanner.close();
     }
