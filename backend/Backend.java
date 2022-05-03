@@ -41,9 +41,9 @@ public class Backend {
 	public static void close(){
 		try{
 			dbConnect.close();
-		} catch(SQLException exception){
+		} catch(Exception exception){
 			exception.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
 		}
 	}
 
@@ -78,6 +78,7 @@ public class Backend {
 			System.out.println("	Rows affected in: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return 0;
 		}
 		if(rowsAffected == 0){
@@ -116,6 +117,7 @@ public class Backend {
 			System.out.println("	rows affected: " + rowsAffected);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return 0;
 		}
 		if(rowsAffected == 0){
@@ -159,6 +161,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return 0;
 		}
 		if(rowsAffected == 0){
@@ -202,6 +205,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return 0;
 		}
 		if(rowsAffected == 0){
@@ -232,6 +236,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -255,6 +260,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch (Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -288,6 +294,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch (Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -314,6 +321,7 @@ public class Backend {
 			rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Patient WHERE PatientId=%d", patientId));
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -333,6 +341,7 @@ public class Backend {
 			rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Employee WHERE EmployeeId=%d", empId));
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -354,6 +363,7 @@ public class Backend {
 			stmt.executeUpdate(String.format("DELETE FROM Scheduled WHERE ApptNo=%d", apptNo));
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -379,6 +389,7 @@ public class Backend {
 			count = answer.getInt("numPatient");
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return count > 0;
@@ -404,6 +415,7 @@ public class Backend {
 			count = answer.getInt("numEmp");
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return count > 0;
@@ -432,6 +444,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch (Exception exception){
+			exception.printStackTrace();
 			return false;
 		}
 		return rowsAffected != 0;
@@ -485,6 +498,7 @@ public class Backend {
 			}
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return -2; // some SQLException
 		}
 		return rc; 
@@ -509,6 +523,7 @@ public class Backend {
 				"WHERE CAST(BookTime AS DATE) <= '%s' AND DoseNo > 1 AND DoseNo < 5", date));
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return null;
 		}
 		return answer;
@@ -534,6 +549,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return null;
 		}
 		return answer;
@@ -557,6 +573,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return null;
 		}
 		return answer;
@@ -587,6 +604,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return null;
 		}
 		return answer;
@@ -612,6 +630,7 @@ public class Backend {
 			);
 			stmt.close();
 		} catch(Exception exception){
+			exception.printStackTrace();
 			return null;
 		}
 		return answer;
