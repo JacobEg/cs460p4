@@ -21,6 +21,7 @@ package frontend;
 import backend.Backend;
 
 import java.sql.ResultSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,7 +43,7 @@ public class Frontend {
      * Post-conditions: scanner is closed
      */
     private static void promptUser() {
-        System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1:EXIT");
+        System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1. EXIT");
         Scanner scanner = new Scanner(System.in); // user's selection from text menu
         System.out.println("Choose an option from the menu: ");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
@@ -85,6 +86,7 @@ public class Frontend {
         System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         int patientID; // patientID attribute
+        int newID; // newly generated ID by backend
         while (option != 4) {
             switch (option) {
                 case 1: // insert Patient record
@@ -154,7 +156,8 @@ public class Frontend {
                     }
 
                     // insert Patient record
-                    Backend.addPatient(fname, lname, bursar, provider, birth);
+                    newID = Backend.addPatient(fname, lname, bursar, provider, birth);
+                    System.out.println("Patient added. New patient ID: " + newID);
                     break;
 
                 case 2: // insert Employee record
@@ -203,7 +206,8 @@ public class Frontend {
                     }
 
                     // insert Employee record
-                    Backend.addEmployee(patientID, acct, rout);
+                    newID = Backend.addEmployee(patientID, acct, rout);
+                    System.out.println("Employee added. New employee ID: " + newID);
                     break;
 
                 case 3: // insert Appointment record
@@ -225,6 +229,7 @@ public class Frontend {
                                 immunAppt = scanner.nextLine();
                             }
                         }
+                        break;
                     }
 
                     // verifies the value for inPerson is formatted correctly
@@ -299,7 +304,8 @@ public class Frontend {
                             }
 
                             // insert walk-in appointment record
-                            Backend.addWalkin(bookDate, inPerson, service, employeeID, patientid, isEmergency);
+                            newID = Backend.addWalkin(bookDate, inPerson, service, employeeID, patientid, isEmergency);
+                            System.out.println("Appointment added. New appointment number: " + newID);
                             break;
 
                         case 2: // Insert walk-in appointment
@@ -319,12 +325,14 @@ public class Frontend {
                             }
 
                             // insert walk-in appointment record
-                            Backend.addScheduled(checkIn, inPerson, service, employeeID, patientid);
+                            newID = Backend.addScheduled(checkIn, inPerson, service, employeeID, patientid);
+                            System.out.println("Appointment added. New appointment number: " + newID);
                             break;
 
                         default:
                             System.out.println("Invalid appointment option.");
                     }
+
                     break;
                 default:
                     System.out.println("Invalid option. Please choose one of the following: ");
@@ -734,15 +742,19 @@ public class Frontend {
 
         // verifies dose is formatted as int
         int dose; // number of immunization dose
-        while(true) {
-            System.out.print("Enter the dose number: ");
-            try {
-                dose = Integer.parseInt(scanner.nextLine());
-            } catch (Exception e) {
-                System.out.println("Dose number must be an integer value.");
-                continue;
+        if (immunType.toUpperCase().equals("COVID-19")) {
+            dose = -1;
+        } else {
+            while(true) {
+                System.out.print("Enter the dose number: ");
+                try {
+                    dose = Integer.parseInt(scanner.nextLine());
+                } catch (Exception e) {
+                    System.out.println("Dose number must be an integer value.");
+                    continue;
+                }
+                break;
             }
-            break;
         }
 
         // insert immunization appointment
