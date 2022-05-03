@@ -28,6 +28,12 @@ import java.util.regex.Pattern;
 public class Frontend {
     public static void main(String[] args) {
         Backend.init();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                System.out.println("Exiting Application.");
+                Backend.close();
+            }
+         });
         promptUser();
         Backend.close();
     }
