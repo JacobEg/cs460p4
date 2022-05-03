@@ -221,6 +221,8 @@ public class Frontend {
                                 break;
                             } else {
                                 System.out.println("Only 'Y' and 'N' accepted for input");
+                                System.out.println("Is this appointment for an immunization? ('Y'/'N')");
+                                immunAppt = scanner.nextLine();
                             }
                         }
                     }
