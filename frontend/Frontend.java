@@ -49,11 +49,12 @@ public class Frontend {
      * Post-conditions: scanner is closed
      */
     private static void promptUser() {
-        System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1. EXIT");
         Scanner scanner = new Scanner(System.in); // user's selection from text menu
         System.out.println("Choose an option from the menu: ");
-        int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int option = 0; // user's selection from text menu
         while (option != -1) {
+            System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1. EXIT");
+            option = Integer.parseInt(scanner.nextLine());
             switch (option) {
                 case 1: // Insert record
                     insert(scanner);
@@ -437,7 +438,7 @@ public class Frontend {
                         successfulUpdate = Backend.updatePatient(id, attr, value);
                         if (successfulUpdate)
                             break;
-                        System.out.println("Patient id could not be found. Try a different id.");
+                        System.out.println("Failed to update patient record.");
                     }
                     break;
                 case 2: // update an employee record
@@ -452,7 +453,7 @@ public class Frontend {
                         successfulUpdate = Backend.updateEmployee(id, attr, value);
                         if (successfulUpdate)
                             break;
-                        System.out.println("Employee id could not be found. Try a different id.");
+                        System.out.println("Failed to update employee record.");
                     }
                     break;
 
@@ -468,7 +469,7 @@ public class Frontend {
                         successfulUpdate = Backend.updateAppointment(id, attr, value);
                         if (successfulUpdate)
                             break;
-                        System.out.println("Appointment number could not be found. Try a different number.");
+                        System.out.println("Failed to update appointment record.");
                     }
                     break;
 
@@ -739,7 +740,7 @@ public class Frontend {
 
         // verifies dose is formatted as int
         int dose; // number of immunization dose
-        if (immunType.toUpperCase().equals("COVID-19")) {
+        if (!immunType.toUpperCase().equals("COVID-19")) {
             dose = -1;
         } else {
             while(true) {
