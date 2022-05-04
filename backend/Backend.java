@@ -3,7 +3,14 @@
  * Instructor: Dr. Lester McCann
  * TAs: Haris Riaz & Aayush Pinto
  * Project: Program #4: Database Design & Implementation
- * Description:
+ * Description: Uses JDBC to connect to the egestadj database. Then takes requests from the
+ * 				frontend dependent on user-input commands to do things like insert, update, or
+ * 				delete records in the database, or make one of five prewritten queries for
+ * 				information. Some of these queries depend also on a user-inserted value. The
+ * 				insert methods return the generated ID value for the record created, and update
+ * 				and deleted methods return a boolean representing the success of the command.
+ * 				There are also various getter methods used by the frontend program to determine
+ * 				whether certain records can be found in the tables.
  * 
  * Known Bugs: N/A
  * Java Version: 16.0.2
