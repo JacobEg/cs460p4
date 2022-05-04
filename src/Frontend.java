@@ -293,7 +293,9 @@ public class Frontend {
                                 bookedMatcher = bookDatePattern.matcher(bookDate);
                                 if (!bookedMatcher.find() || bookDate.length() != 19) {
                                     System.out.println("\nAppointment time must be in form 'YYYY-MM-DD HH:MI:SS'");
-                                } else {
+                                } else if(Backend.timeOverlaps(bookDate)){ // verify no overlap
+                                    System.out.println("This time overlaps with an existing appointment.");
+                                }else {
                                     break;
                                 }
                             }
@@ -314,7 +316,9 @@ public class Frontend {
                                 checkInMatcher = checkInDate.matcher(checkIn);
                                 if (!checkInMatcher.find() || checkIn.length() != 19) {
                                     System.out.println("\nCheck-in must be in form 'YYYY-MM-DD HH:MI:SS'");
-                                } else {
+                                } else if(Backend.timeOverlaps(checkIn)){ // verify no overlap
+                                    System.out.println("This time overlaps with an existing appointment.");
+                                }else {
                                     break;
                                 }
                             }
@@ -464,6 +468,11 @@ public class Frontend {
                         attr = scanner.nextLine().strip();
                         System.out.println("Enter a new value for the attribute: ");
                         value = scanner.nextLine().strip();
+                        // verify no overlap
+                        if((attr.equalsIgnoreCase("CheckInTime") || attr.equalsIgnoreCase("BookTime")) && Backend.timeOverlaps(value)){
+                            System.out.println("This time overlaps with an existing appointment.");
+                            continue;
+                        }
                         successfulUpdate = Backend.updateAppointment(id, attr, value);
                         if (successfulUpdate)
                             break;
