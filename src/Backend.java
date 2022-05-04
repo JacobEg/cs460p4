@@ -139,10 +139,11 @@ public class Backend {
 	 * @return
 	 */
 	public static boolean timeOverlaps(String bookTime){
-		stmt1.executeQuery(
+		/*stmt1.executeQuery(
 			String.format("SELECT PatientId FROM Appointment JOIN Scheduled USING (ApptNo) " +
 			"WHERE ", args)
-		);
+		);*/
+		return false;
 	}
 
 	/**
