@@ -361,6 +361,12 @@ public class Backend {
 			rowsAffected = stmt.executeUpdate(String.format("DELETE FROM Appointment WHERE ApptNo=%d", apptNo));
 			stmt.executeUpdate(String.format("DELETE FROM Walkin WHERE ApptNo=%d", apptNo));
 			stmt.executeUpdate(String.format("DELETE FROM Scheduled WHERE ApptNo=%d", apptNo));
+			ResultSet answer = stmt.executeQuery("SELECT INo FROM Immunization WHERE ApptNo=" + apptNo); // for deleting from immunization table
+			if(answer.next()){
+				int iNo = answer.getInt("INo"); // for deleting from immunization and covid tables
+				stmt.executeUpdate("DELETE FROM Immunization WHERE INo=" + iNo);
+				stmt.executeUpdate("DELETE FROM Covid WHERE INo=" + iNo);
+			}
 			stmt.close();
 		} catch(Exception exception){
 			exception.printStackTrace();
@@ -455,9 +461,7 @@ public class Backend {
 	 * @param illness illness they are getting vaccinated for
 	 * @param dateTime appointment time
 	 * @param dose dose number (if covid, otherwise not used)
-	 * @return -2 if SQLException, -1 if patient doesn't exist, 0 if not a covid vaccine or the
-	 * patient is under 50 or the dose != 3, 1 if it's a covid vaccine and the dose == 3 and the
-	 * patient is over 50
+	 * @return appointment number
 	 * Pre-condition: init is called
 	 * Post-condition: immunization has been scheduled
 	 */
@@ -467,7 +471,7 @@ public class Backend {
 			return -1; // -1 == no patient
 		}
 		int apptNo = addScheduled(dateTime, "Y", "Immunization", "NULL", "" + patientID); // appointment number of immunization
-		int rc = 0; // not covid vaccine or the patient is under 50 or the dose != 3
+		//int rc = 0; // not covid vaccine or the patient is under 50 or the dose != 3
 		try{
 			Statement stmt = dbConnect.createStatement(); // for querying db
 			ResultSet answer = stmt.executeQuery("SELECT MAX(INo) As maxIno FROM Immunization"); // for getting new INo
@@ -492,15 +496,15 @@ public class Backend {
 					)
 				);
 				if(answer.next() && dose == 3){ // patient is >= 50 and dose = 3
-					rc = 1; // covid vaccine and patient >= 50 and dose = 3; must schedule 4th
+					//rc = 1; // covid vaccine and patient >= 50 and dose = 3; must schedule 4th
 				}
 			}
 			stmt.close();
 		} catch(Exception exception){
 			exception.printStackTrace();
-			return -2; // some SQLException
+			return apptNo;
 		}
-		return rc; 
+		return apptNo; 
 	}
 
 	/**
