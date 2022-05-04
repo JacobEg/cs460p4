@@ -16,8 +16,6 @@
  * Java Version: 16.0.2
  */
 
-package backend;
-
 import java.sql.*;
 
 public class Backend {
@@ -133,6 +131,18 @@ public class Backend {
 			return 0;
 		}
 		return newEmpID;
+	}
+
+	/**
+	 * 
+	 * @param bookTime
+	 * @return
+	 */
+	public static boolean timeOverlaps(String bookTime){
+		stmt1.executeQuery(
+			String.format("SELECT PatientId FROM Appointment JOIN Scheduled USING (ApptNo) " +
+			"WHERE ", args)
+		);
 	}
 
 	/**

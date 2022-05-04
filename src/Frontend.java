@@ -16,10 +16,6 @@
  * Missing Features and Bugs: N/A
  */
 
-package frontend;
-
-import backend.Backend;
-
 import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.Scanner;
