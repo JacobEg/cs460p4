@@ -559,9 +559,8 @@ public class Frontend {
                 "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty" +
                 "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t" +
                 "he list of staff members working that day and a staff member's working hours.\n  4. Print the" +
-                " vaccine statistics of the two categories of patients (student, employees). \n  5. Given an illnes, " +
-                "print the list of patients who have received a vaccination for the illness ordered by name\n  " +
-                "6. Return to options menu");
+                " vaccine statistics of the two categories of patients (student, employees). \n  5. Print the " +
+                "names of patients vaccinated for a given illness.\n  6. Return to options menu");
         int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
         while (option != 6) {
             String date; // the date to be input by the user
@@ -675,7 +674,7 @@ public class Frontend {
                     "  2. Given a certain date, output which patients had a non-walk-in appointment. Sort in order by appointment time and group by type of service.\n" +
                     "  3. Print the schedule of staff given a certain date . A schedule contains the list of staff members working that day and a staff member's working hours.\n" +
                     "  4. Print the vaccine statistics of the two categories of patients (student, employees). \n" +
-                    "  5. A query of your choice\n  6. Return to options menu");
+                    "  5. Print the names of patients vaccinated for a given illness.\n  6. Return to options menu");
             System.out.println("Choose an option from the menu: ");
             option = Integer.parseInt(scanner.nextLine());
         }
