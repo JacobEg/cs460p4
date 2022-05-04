@@ -596,7 +596,7 @@ public class Backend {
 						"JOIN Immunization USING (ApptNo) " +
 						"JOIN Covid USING (INo) " +
 						"WHERE InsuranceProvider='UA' " +
-						"GROUP BY PatientID;"
+						"GROUP BY PatientID"
 			);
 			answer[1] = stmt2.executeQuery(
 				"SELECT PatientID as Patients, MAX(DoseNo) as MaxDose FROM Patient " +
