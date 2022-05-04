@@ -641,19 +641,45 @@ public class Frontend {
                     ResultSet[] answers = Backend.getCOVIDImmunizationStats(); // array of JSON query results
                     try {
                         System.out.println("Student statistics\n-----------------");
+                        int maxDoseOneCount = 0; // number of patients with one dose total
+                        int maxDoseTwoCount = 0; // number of patients with two doses total
+                        int maxDoseThreeCount = 0; // number of patients with three doses total
+                        int maxDoseFourCount = 0; // number of patients with four doses total
                         while(answers[0].next()){
-                            System.out.println(String.format(
-                                "%d student(s) have received COVID-19 vaccine dose %d",
-                                answers[0].getInt("Patients"), answers[0].getInt("MaxDose"))
-                            );
+                            if (answers[0].getInt("MaxDose") == 1) {
+                                maxDoseOneCount += 1;
+                            } else if (answers[0].getInt("MaxDose") == 2) {
+                                maxDoseTwoCount += 1;
+                            } else if (answers[0].getInt("MaxDose") == 3) {
+                                maxDoseThreeCount += 1;
+                            } else if (answers[0].getInt("MaxDose") == 4) {
+                                maxDoseFourCount += 1;
+                            }
                         }
+                        System.out.println(String.format("    %d student(s) have received COVID-19 vaccine dose %d", maxDoseOneCount, 1));
+                        System.out.println(String.format("    %d student(s) have received COVID-19 vaccine dose %d", maxDoseTwoCount, 2));
+                        System.out.println(String.format("    %d student(s) have received COVID-19 vaccine dose %d", maxDoseThreeCount, 3));
+                        System.out.println(String.format("    %d student(s) have received COVID-19 vaccine dose %d", maxDoseFourCount, 4));
                         System.out.println("Employee statistics\n------------------");
+                        maxDoseOneCount = 0;
+                        maxDoseTwoCount = 0;
+                        maxDoseThreeCount = 0;
+                        maxDoseFourCount = 0;
                         while(answers[1].next()){
-                            System.out.println(String.format(
-                                "%d employee(s) have received COVID-19 vaccine dose %d",
-                                answers[1].getInt("Patients"), answers[1].getInt("MaxDose"))
-                            );
+                            if (answers[1].getInt("MaxDose") == 1) {
+                                maxDoseOneCount += 1;
+                            } else if (answers[1].getInt("MaxDose") == 2) {
+                                maxDoseTwoCount += 1;
+                            } else if (answers[1].getInt("MaxDose") == 3) {
+                                maxDoseThreeCount += 1;
+                            } else if (answers[1].getInt("MaxDose") == 4) {
+                                maxDoseFourCount += 1;
+                            }
                         }
+                        System.out.println(String.format("    %d employee(s) have received COVID-19 vaccine dose %d", maxDoseOneCount, 1));
+                        System.out.println(String.format("    %d employee(s) have received COVID-19 vaccine dose %d", maxDoseTwoCount, 2));
+                        System.out.println(String.format("    %d employee(s) have received COVID-19 vaccine dose %d", maxDoseThreeCount, 3));
+                        System.out.println(String.format("    %d employee(s) have received COVID-19 vaccine dose %d", maxDoseFourCount, 4));
                     } catch (Exception exception) {
                         exception.printStackTrace();
                         System.err.println("Error fetching results for 4th query");

@@ -581,7 +581,7 @@ public class Backend {
 	}
 
 	/**
-	 * getCOVIDImmunizationStats: Get vaccinated statistings for covid (# of people with each dose)
+	 * getCOVIDImmunizationStats: Get vaccinated statistics for covid (# of people with each dose)
 	 * for students and employees
 	 * @return ResultSets with results from queries 0th index is students, 1st index is employees
 	 * Pre-conditions: init has been called
@@ -591,16 +591,21 @@ public class Backend {
 		ResultSet[] answer = {null, null}; // for returning results from query
 		try{
 			answer[0] = stmt1.executeQuery(
-				"SELECT COUNT(PatientID) AS Patients,MAX(DoseNo) AS MaxDose FROM " +
-				"Patient JOIN Appointment USING (PatientId) " +
-				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider<>'UA'"
+				"SELECT PatientID as Patients, MAX(DoseNo) as MaxDose FROM Patient " +
+						"JOIN Appointment USING (PatientId) " +
+						"JOIN Immunization USING (ApptNo) " +
+						"JOIN Covid USING (INo) " +
+						"WHERE InsuranceProvider='UA' " +
+						"GROUP BY PatientID;"
 			);
 			answer[1] = stmt2.executeQuery(
-				"SELECT COUNT(PatientID) AS Patients,MAX(DoseNo) AS MaxDose FROM " +
-				"Patient JOIN Appointment USING (PatientId) " +
-				"JOIN Immunization USING (ApptNo) JOIN Covid USING (INo) " +
-				"WHERE CheckinTime <= SYSDATE AND InsuranceProvider='UA'"
+				"SELECT PatientID as Patients, MAX(DoseNo) as MaxDose FROM Patient " +
+						"JOIN Appointment USING (PatientId) " +
+						"JOIN Immunization USING (ApptNo) " +
+						"JOIN Covid USING (INo) " +
+						"WHERE PatientID NOT IN (SELECT PatientID FROM Patient " +
+						"WHERE InsuranceProvider='UA') " +
+						"GROUP BY PatientID"
 			);
 		} catch(Exception exception){
 			exception.printStackTrace();
