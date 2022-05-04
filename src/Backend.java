@@ -134,15 +134,34 @@ public class Backend {
 	}
 
 	/**
-	 * 
-	 * @param bookTime
-	 * @return
+	 * timeOverlaps: sees if the proposed time overlaps with any appointments
+	 * Pre-conditions: init has been called
+	 * Post-conditions: N/A
+	 * @param time the proposed tome to check
+	 * @return true if the time overlaps with any appointments, else false
 	 */
-	public static boolean timeOverlaps(String bookTime){
-		/*stmt1.executeQuery(
-			String.format("SELECT PatientId FROM Appointment JOIN Scheduled USING (ApptNo) " +
-			"WHERE ", args)
-		);*/
+	public static boolean timeOverlaps(String time){
+		ResultSet answer = null;
+		try{
+			answer = stmt1.executeQuery(
+				String.format("SELECT PatientId FROM Appointment JOIN Scheduled USING (ApptNo) " +
+				"WHERE TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS') + interval '60' minute >= BookTime " +
+				"AND TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS') <= BookTime + interval '60' minute " +
+				"UNION " +
+				"SELECT PatientID FROM Appointment " +
+				"WHERE TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS') + interval '60' minute >= CheckinTime " +
+				"AND TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS') <= CheckinTime + interval '60' minute",
+				time, time, time, time)
+			);
+			if(answer.next()){
+				System.out.println("timeOverlaps q has results, returning true");
+				return true;
+			}
+		} catch(Exception exception){
+			exception.printStackTrace();
+			return false;
+		}
+		System.out.println("timeOverlaps q does not have results, returning false");
 		return false;
 	}
 
