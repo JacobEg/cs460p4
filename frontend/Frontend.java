@@ -304,7 +304,7 @@ public class Frontend {
 
                             // insert booked appointment record
                             newID = Backend.addScheduled(bookDate, inPerson, service, employeeID, patientid);
-                            System.out.println("Appointment added. New appointment number: " + newID);
+                            System.out.println("Scheduled appointment added. New appointment number: " + newID);
                             break;
 
                         case 2: // Insert walk-in appointment
@@ -335,7 +335,7 @@ public class Frontend {
 
                             // insert walk-in appointment record
                             newID = Backend.addWalkin(checkIn, inPerson, service, employeeID, patientid, isEmergency);
-                            System.out.println("Appointment added. New appointment number: " + newID);
+                            System.out.println("Walk-in appointment added. New appointment number: " + newID);
                             break;
 
                         default:
@@ -537,7 +537,7 @@ public class Frontend {
                     System.out.println("Invalid option. Please choose one of the following: ");
 
             }
-            System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
+            System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Add shift\n 5. Return to options menu");
             System.out.println("Choose an option from the menu: ");
             option = Integer.parseInt(scanner.nextLine());
         }
@@ -758,7 +758,8 @@ public class Frontend {
         }
 
         // insert immunization appointment
-        Backend.scheduleImmunization(patientID, immunType, bookDate, dose);
+        int newID = Backend.scheduleImmunization(patientID, immunType, bookDate, dose);
+        System.out.println("Immunization appointment added. New appointment number is " + newID);
     }
 
 }
