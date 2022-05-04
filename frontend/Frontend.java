@@ -292,7 +292,7 @@ public class Frontend {
                             Pattern bookDatePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"); // regex pattern for datetime
                             Matcher bookedMatcher; // regex pattern matcher for datetime
                             while(true) {
-                                System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
+                                System.out.print("Enter the scheduled date/time (YYYY-MM-DD HH:MI:SS): ");
                                 bookDate = scanner.nextLine();
                                 bookedMatcher = bookDatePattern.matcher(bookDate);
                                 if (!bookedMatcher.find() || bookDate.length() != 19) {
