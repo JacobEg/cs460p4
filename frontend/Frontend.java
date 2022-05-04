@@ -54,7 +54,7 @@ public class Frontend {
         int option = 0; // user's selection from text menu
         while (option != -1) {
             System.out.println("1. Insert record\n2. Delete record\n3. Update record\n4. Query database\n-1. EXIT");
-            option = Integer.parseInt(scanner.nextLine());
+            option = Integer.parseInt(scanner.nextLine().strip());
             switch (option) {
                 case 1: // Insert record
                     insert(scanner);
@@ -91,7 +91,7 @@ public class Frontend {
      */
     private static void insert(Scanner scanner) {
         System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
-        int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int option = Integer.parseInt(scanner.nextLine().strip()); // user's selection from text menu
         int patientID; // patientID attribute
         int newID; // newly generated ID by backend
         while (option != 4) {
@@ -101,7 +101,7 @@ public class Frontend {
                     String fname; // Patient's first name
                     while(true) {
                         System.out.print("Enter the patient's first name: ");
-                        fname = scanner.nextLine();
+                        fname = scanner.nextLine().strip();
                         if (fname.length() > 30) {
                             System.out.println("\nPatient's first name must be 30 characters or less");
                         } else {
@@ -113,7 +113,7 @@ public class Frontend {
                     String lname; // Patient's last name
                     while(true) {
                         System.out.print("Enter the patient's last name: ");
-                        lname = scanner.nextLine();
+                        lname = scanner.nextLine().strip();
                         if (fname.length() > 30) {
                             System.out.println("\nPatient's last name must be 30 characters or less");
                         } else {
@@ -125,7 +125,7 @@ public class Frontend {
                     String bursar; // Patient's bursar account number
                     while(true) {
                         System.out.print("Enter the patient's bursar account number: ");
-                        bursar = scanner.nextLine();
+                        bursar = scanner.nextLine().strip();
                         try {
                             int bursarInt = Integer.parseInt(bursar); // Integer form of bursar acct number
                         } catch (Exception e) {
@@ -139,7 +139,7 @@ public class Frontend {
                     String provider; // Patient's insurance provider
                     while(true) {
                         System.out.print("Enter the patient's insurance provider: ");
-                        provider = scanner.nextLine();
+                        provider = scanner.nextLine().strip();
                         if (provider.length() > 50) {
                             System.out.println("\nInsurance provider name must be 50 characters or less");
                         } else {
@@ -153,7 +153,7 @@ public class Frontend {
                     Matcher dateMatcher; // SQL date type pattern matcher
                     while(true) {
                         System.out.print("Enter the patient's birthdate (YYYY-MM-DD): ");
-                        birth = scanner.nextLine();
+                        birth = scanner.nextLine().strip();
                         dateMatcher = date.matcher(birth);
                         if (!dateMatcher.find() || birth.length() != 10) {
                             System.out.println("\nBirthdate must be in form 'YYYY-MM-DD'");
@@ -172,7 +172,7 @@ public class Frontend {
                     while(true) {
                         System.out.print("Enter the employee's patientID: ");
                         try {
-                            patientID = Integer.parseInt(scanner.nextLine());
+                            patientID = Integer.parseInt(scanner.nextLine().strip());
                         } catch (Exception e) {
                             System.out.println("patientID must be an integer.");
                             continue;
@@ -188,7 +188,7 @@ public class Frontend {
                     String acct; // Employee's direct deposit account number
                     while(true) {
                         System.out.print("Enter the employee's direct deposit account number: ");
-                        acct = scanner.nextLine();
+                        acct = scanner.nextLine().strip();
                         try {
                             int acctInt = Integer.parseInt(acct); // Integer form of acct number
                         } catch (Exception e) {
@@ -202,7 +202,7 @@ public class Frontend {
                     String rout; // Employee's direct deposit routing number
                     while(true) {
                         System.out.print("Enter the employee's direct deposit routing number: ");
-                        rout = scanner.nextLine();
+                        rout = scanner.nextLine().strip();
                         try {
                             int acctInt = Integer.parseInt(rout); // Integer form of routing number
                         } catch (Exception e) {
@@ -219,13 +219,13 @@ public class Frontend {
 
                 case 3: // insert Appointment record
                     System.out.println("Is this a booked appointment or a walk-in appointment?\n  1. Booked\n  2. Walk-in");
-                    int apptOption = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+                    int apptOption = Integer.parseInt(scanner.nextLine().strip()); // user's selection from text menu
 
                     if (apptOption == 1) {
                         String immunAppt;
                         while (true) {
                             System.out.println("Is this appointment for an immunization? ('Y'/'N')");
-                             immunAppt = scanner.nextLine(); // Whether appointment is for immunization
+                             immunAppt = scanner.nextLine().strip(); // Whether appointment is for immunization
                             if (immunAppt.equals("Y")) {
                                 schedImmun(scanner);
                                 break;
@@ -234,7 +234,7 @@ public class Frontend {
                             } else {
                                 System.out.println("Only 'Y' and 'N' accepted for input");
                                 System.out.println("Is this appointment for an immunization? ('Y'/'N')");
-                                immunAppt = scanner.nextLine();
+                                immunAppt = scanner.nextLine().strip();
                             }
                         }
                         if (immunAppt.equals("Y"))
@@ -245,7 +245,7 @@ public class Frontend {
                     String inPerson; // Whether appointment is in person (or remote)
                     while(true) {
                         System.out.println("Is this appointment in person? ('Y'/'N')");
-                        inPerson = scanner.nextLine();
+                        inPerson = scanner.nextLine().strip();
                         if (inPerson.equals("Y") || inPerson.equals("N"))
                             break;
                         System.out.println("In-person status must be input as 'Y' or 'N'");
@@ -255,7 +255,7 @@ public class Frontend {
                     String service; // Name of Campus Health service
                     while(true) {
                         System.out.println("Enter the Campus Health Service for the appointment: ");
-                        service = scanner.nextLine();
+                        service = scanner.nextLine().strip();
                         if (service.equals("CAPS") || service.equals("Immunization") ||
                                 service.equals("Laboratory and Testing") || service.equals("General Medicine"))
                         break;
@@ -266,7 +266,7 @@ public class Frontend {
                     String employeeID; // Employee ID of employee working the appointment
                     while(true) {
                         System.out.println("Enter the employeeID of the employee working the appointment: ");
-                        employeeID = scanner.nextLine();
+                        employeeID = scanner.nextLine().strip();
                         if (employeeID.equals("NULL") || Backend.employeeExists(Integer.parseInt(employeeID))) {
                             break;
                         }
@@ -277,7 +277,7 @@ public class Frontend {
                     String patientid; // Patient ID of patient attending appointment
                     while(true) {
                         System.out.println("Enter the patientID of the patient attending the appointment: ");
-                        patientid = scanner.nextLine();
+                        patientid = scanner.nextLine().strip();
                         if (Backend.patientExists(Integer.parseInt(patientid))) {
                             break;
                         }
@@ -293,7 +293,7 @@ public class Frontend {
                             Matcher bookedMatcher; // regex pattern matcher for datetime
                             while(true) {
                                 System.out.print("Enter the scheduled date/time (YYYY-MM-DD HH:MI:SS): ");
-                                bookDate = scanner.nextLine();
+                                bookDate = scanner.nextLine().strip();
                                 bookedMatcher = bookDatePattern.matcher(bookDate);
                                 if (!bookedMatcher.find() || bookDate.length() != 19) {
                                     System.out.println("\nAppointment time must be in form 'YYYY-MM-DD HH:MI:SS'");
@@ -314,7 +314,7 @@ public class Frontend {
                             Matcher checkInMatcher; // regex pattern matcher for datetime
                             while(true) {
                                 System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
-                                checkIn = scanner.nextLine();
+                                checkIn = scanner.nextLine().strip();
                                 checkInMatcher = checkInDate.matcher(checkIn);
                                 if (!checkInMatcher.find() || checkIn.length() != 19) {
                                     System.out.println("\nCheck-in must be in form 'YYYY-MM-DD HH:MI:SS'");
@@ -327,7 +327,7 @@ public class Frontend {
                             String isEmergency; // Whether appointment is an emergency
                             while(true) {
                                 System.out.println("Is this appointment an emergency? ('Y'/'N')");
-                                isEmergency = scanner.nextLine();
+                                isEmergency = scanner.nextLine().strip();
                                 if (isEmergency.equals("Y") || isEmergency.equals("N"))
                                     break;
                                 System.out.println("Emergency status must be input as 'Y' or 'N'");
@@ -348,7 +348,7 @@ public class Frontend {
             }
             System.out.println("Insert a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
             System.out.println("Choose an option from the menu: ");
-            option = Integer.parseInt(scanner.nextLine());
+            option = Integer.parseInt(scanner.nextLine().strip());
         }
     }
 
@@ -365,7 +365,7 @@ public class Frontend {
      */
     private static void delete(Scanner scanner) {
         System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
-        int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int option = Integer.parseInt(scanner.nextLine().strip()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
         boolean successfulDelete; // whether record was deleted successfully
         while (option != 4) {
@@ -373,7 +373,7 @@ public class Frontend {
                 case 1: // Delete patient record
                     // verifies existence of patient in DB
                     System.out.println("Enter a patient id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    id = Integer.parseInt(scanner.nextLine().strip());
                     successfulDelete = Backend.deletePatient(id);
                     if (!successfulDelete)
                         System.out.println("Failed to delete patient.");
@@ -382,7 +382,7 @@ public class Frontend {
                 case 2: // Delete employee record
                     // verifies existence of employee in DB
                     System.out.println("Enter an employee id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    id = Integer.parseInt(scanner.nextLine().strip());
                     successfulDelete = Backend.deleteEmployee(id);
                     if (!successfulDelete)
                         System.out.println("Employee id could not be found. Try a different id.");
@@ -391,7 +391,7 @@ public class Frontend {
                 case 3: // Delete appointment record
                     // verifies existence of appointment in DB
                     System.out.println("Enter an appointment id: ");
-                    id = Integer.parseInt(scanner.nextLine());
+                    id = Integer.parseInt(scanner.nextLine().strip());
                     successfulDelete = Backend.deleteAppointment(id);
                     if (!successfulDelete)
                         System.out.println("Appointment number could not be found. Try a different number.");
@@ -401,7 +401,7 @@ public class Frontend {
             }
             System.out.println("Delete a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Return to options menu");
             System.out.println("Choose an option from the menu: ");
-            option = Integer.parseInt(scanner.nextLine());
+            option = Integer.parseInt(scanner.nextLine().strip());
         }
     }
 
@@ -421,7 +421,7 @@ public class Frontend {
      */
     private static void update(Scanner scanner) {
         System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Add shift\n 5. Return to options menu");
-        int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int option = Integer.parseInt(scanner.nextLine().strip()); // user's selection from text menu
         int id; // id of table entry (either PatientID, EmployeeID, AppointmentNo)
         boolean successfulUpdate;  // whether record was successfully updated
         String attr; // attribute user wishes to update
@@ -432,11 +432,11 @@ public class Frontend {
                     // verifies patient record is successfully updated
                     while(true) {
                         System.out.println("Enter a patient id: ");
-                        id = Integer.parseInt(scanner.nextLine());
+                        id = Integer.parseInt(scanner.nextLine().strip());
                         System.out.println("Enter an attribute to change: ");
-                        attr = scanner.nextLine();
+                        attr = scanner.nextLine().strip();
                         System.out.println("Enter a new value for the attribute: ");
-                        value = scanner.nextLine();
+                        value = scanner.nextLine().strip();
                         successfulUpdate = Backend.updatePatient(id, attr, value);
                         if (successfulUpdate)
                             break;
@@ -447,11 +447,11 @@ public class Frontend {
                     // verifies employee record is successfully updated
                     while(true) {
                         System.out.println("Enter an employee id: ");
-                        id = Integer.parseInt(scanner.nextLine());
+                        id = Integer.parseInt(scanner.nextLine().strip());
                         System.out.println("Enter an attribute to change: ");
-                        attr = scanner.nextLine();
+                        attr = scanner.nextLine().strip();
                         System.out.println("Enter a new value for the attribute: ");
-                        value = scanner.nextLine();
+                        value = scanner.nextLine().strip();
                         successfulUpdate = Backend.updateEmployee(id, attr, value);
                         if (successfulUpdate)
                             break;
@@ -463,11 +463,11 @@ public class Frontend {
                     // verifies appointment record is successfully updated
                     while(true) {
                         System.out.println("Enter an appointment number: ");
-                        id = Integer.parseInt(scanner.nextLine());
+                        id = Integer.parseInt(scanner.nextLine().strip());
                         System.out.println("Enter an attribute to change: ");
-                        attr = scanner.nextLine();
+                        attr = scanner.nextLine().strip();
                         System.out.println("Enter a new value for the attribute: ");
-                        value = scanner.nextLine();
+                        value = scanner.nextLine().strip();
                         successfulUpdate = Backend.updateAppointment(id, attr, value);
                         if (successfulUpdate)
                             break;
@@ -479,7 +479,7 @@ public class Frontend {
                     // verifies employee id exists in table
                     while(true) {
                         System.out.println("Enter an employee id: ");
-                        id = Integer.parseInt(scanner.nextLine());
+                        id = Integer.parseInt(scanner.nextLine().strip());
                         if (Backend.employeeExists(id)) {
                             break;
                         }
@@ -492,7 +492,7 @@ public class Frontend {
                     Matcher startTimeMatcher; // regex pattern matcher for datetime
                     while(true) {
                         System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
-                        startTime = scanner.nextLine();
+                        startTime = scanner.nextLine().strip();
                         startTimeMatcher = startDateTime.matcher(startTime);
                         if (!startTimeMatcher.find() || startTime.length() != 19) {
                             System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
@@ -507,7 +507,7 @@ public class Frontend {
                     Matcher endTimeMatcher; // regex pattern matcher for datetime
                     while(true) {
                         System.out.print("Enter the shift start date/time (YYYY-MM-DD HH:MI:SS): ");
-                        endTime = scanner.nextLine();
+                        endTime = scanner.nextLine().strip();
                         endTimeMatcher = endDateTime.matcher(endTime);
                         if (!endTimeMatcher.find() || endTime.length() != 19) {
                             System.out.println("\nDate/time must be in form 'YYYY-MM-DD HH:MI:SS'");
@@ -520,7 +520,7 @@ public class Frontend {
                     String service; // Name of Campus Health service employee works for in shift
                     while(true) {
                         System.out.println("Enter the Campus Health Service for the appointment: ");
-                        service = scanner.nextLine();
+                        service = scanner.nextLine().strip();
                         if (service.equals("CAPS") || service.equals("Immunization") ||
                                 service.equals("Laboratory and Testing") || service.equals("General Medicine"))
                             break;
@@ -539,7 +539,7 @@ public class Frontend {
             }
             System.out.println("Update a(n)...\n  1. Patient\n  2. Employee\n  3. Appointment\n 4. Add shift\n 5. Return to options menu");
             System.out.println("Choose an option from the menu: ");
-            option = Integer.parseInt(scanner.nextLine());
+            option = Integer.parseInt(scanner.nextLine().strip());
         }
     }
 
@@ -554,14 +554,14 @@ public class Frontend {
      * Post-conditions: N/A
      */
     private static void query(Scanner scanner) {
-        System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th dos "+
+        System.out.println("\nPlease choose a query:\n  1. Print a list of patients who have their 2nd, 3rd or 4th dos"+
                 "es of the COVID-19 vaccine scheduled by a certain date.\n  2. Given a certain date, output wh" +
                 "ich patients had a non-walk-in appointment. Sort in order by appointment time and group by ty" +
                 "pe of service.\n  3. Print the schedule of staff given a certain date . A schedule contains t" +
                 "he list of staff members working that day and a staff member's working hours.\n  4. Print the" +
                 " vaccine statistics of the two categories of patients (student, employees). \n  5. Print the " +
                 "names of patients vaccinated for a given illness.\n  6. Return to options menu");
-        int option = Integer.parseInt(scanner.nextLine()); // user's selection from text menu
+        int option = Integer.parseInt(scanner.nextLine().strip()); // user's selection from text menu
         while (option != 6) {
             String date; // the date to be input by the user
             ResultSet answer; // JDBC response to query
@@ -569,16 +569,20 @@ public class Frontend {
                 case 1: // Query 1
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
-                        date = scanner.nextLine();
+                        date = scanner.nextLine().strip();
                         if (checkDate(date)) {
                             answer = Backend.getPatientsScheduledForCOVIDImmunization(date);
-                            System.out.println("Patients who have received their 2nd-4th COVID vaccine by this date\n" +
-                            "----------------------------------------------------------");
+                            System.out.println("Id numbers and names of patients who have " +
+                            "received their 2nd-4th COVID vaccine by this date\n" +
+                            "---------------------------------------------------------------------------------------");
                             try{
                                 while(answer.next()){
-                                    System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                                    System.out.println(
+                                        String.format("%d %s %s", answer.getInt("PatientID"), answer.getString("FName"), answer.getString("LName"))
+                                    );
                                 }
                             } catch(Exception exception){
+                                exception.printStackTrace();
                                 System.err.println("Error fetching results for 1st query");
                             }
                             break;
@@ -590,16 +594,20 @@ public class Frontend {
                 case 2: // Query 2
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
-                        date = scanner.nextLine();
+                        date = scanner.nextLine().strip();
                         if (checkDate(date)) {
                             answer = Backend.getPatientsWithScheduledAppts(date);
                             System.out.println("Patients with scheduled appointments on this day\n" +
                             "------------------------------------------");
                             try{
                                 while(answer.next()){
-                                    System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                                    System.out.println(
+                                        String.format("%s %s %s %s", answer.getString("Service"),
+                                        answer.getString("FName"), answer.getString("LName"), answer.getTimestamp("BookTime").toString())
+                                    );
                                 }
                             } catch(Exception exception){
+                                exception.printStackTrace();
                                 System.err.println("Error fetching results for 2nd query");
                             }
                             break;
@@ -611,7 +619,7 @@ public class Frontend {
                 case 3: // Query 3
                     while(true) {
                         System.out.println("Please enter a date (YYYY-MM-DD):");
-                        date = scanner.nextLine();
+                        date = scanner.nextLine().strip();
                         if (checkDate(date)) {
                             answer = Backend.getStaffSchedule(date);
                             System.out.println("Schedule of staff on this day\n-------------------------");
@@ -620,10 +628,11 @@ public class Frontend {
                                     System.out.println(String.format(
                                         "%s %s: %s -> %s",
                                         answer.getString("FName"), answer.getString("LName"),
-                                        answer.getDate("StartTime").toString(), answer.getDate("EndTime").toString())
+                                        answer.getTimestamp("StartTime").toString(), answer.getTimestamp("EndTime").toString())
                                     );
                                 }
                             } catch(Exception exception){
+                                exception.printStackTrace();
                                 System.err.println("Error fetching results for 3rd query");
                             }
                             break;
@@ -638,32 +647,34 @@ public class Frontend {
                         System.out.println("Student statistics\n-----------------");
                         while(answers[0].next()){
                             System.out.println(String.format(
-                                "%d people have received COVID-19 vaccine dose %d",
-                                answers[0].getInt("Patients"), answers[0].getString("DoseNo"))
+                                "%d student(s) have received COVID-19 vaccine dose %d",
+                                answers[0].getInt("Patients"), answers[0].getInt("MaxDose"))
                             );
                         }
                         System.out.println("Employee statistics\n------------------");
                         while(answers[1].next()){
                             System.out.println(String.format(
-                                "%d people have received COVID-19 vaccine dose %d",
-                                answers[1].getInt("Patients"), answers[1].getString("DoseNo"))
+                                "%d employee(s) have received COVID-19 vaccine dose %d",
+                                answers[1].getInt("Patients"), answers[1].getInt("MaxDose"))
                             );
                         }
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                         System.err.println("Error fetching results for 4th query");
                     }
                     break;
 
                 case 5: // Query 5
                     System.out.println("Enter a type of immunization/illness to search for:");
-                    String immunType = scanner.nextLine(); // Name of immunization
+                    String immunType = scanner.nextLine().strip(); // Name of immunization
                     answer = Backend.getVaccinatedForIllness(immunType);
                     System.out.println("People vaccinated for this illness\n---------------------");
                     try {
                         while(answer.next()){
-                            System.out.println(String.format("%s %s", answer.getString("FName"), answer.getString("LName")));
+                            System.out.println(String.format("%s, %s", answer.getString("LName"), answer.getString("FName")));
                         }
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                         System.err.println("Error fetching results for 5th query");
                     }
                     break;
@@ -676,7 +687,7 @@ public class Frontend {
                     "  4. Print the vaccine statistics of the two categories of patients (student, employees). \n" +
                     "  5. Print the names of patients vaccinated for a given illness.\n  6. Return to options menu");
             System.out.println("Choose an option from the menu: ");
-            option = Integer.parseInt(scanner.nextLine());
+            option = Integer.parseInt(scanner.nextLine().strip());
         }
     }
 
@@ -710,7 +721,7 @@ public class Frontend {
         while(true) {
             System.out.println("Enter the patientID of the patient attending the appointment: ");
             try {
-                patientID = Integer.parseInt(scanner.nextLine());
+                patientID = Integer.parseInt(scanner.nextLine().strip());
             } catch (Exception e) {
                 System.out.println("patientID must be an integer value.");
                 continue;
@@ -722,7 +733,7 @@ public class Frontend {
         }
 
         System.out.println("Enter a type of immunization/illness to search for: ");
-        String immunType = scanner.nextLine(); // Name of immunization
+        String immunType = scanner.nextLine().strip(); // Name of immunization
 
         // verifies Appointment booked time is formatted as SQL DATETIME
         String bookDate; // booking/scheduling date/time of appointment
@@ -730,7 +741,7 @@ public class Frontend {
         Matcher bookedMatcher; // regex pattern matcher for datetime
         while(true) {
             System.out.print("Enter the check-in date/time (YYYY-MM-DD HH:MI:SS): ");
-            bookDate = scanner.nextLine();
+            bookDate = scanner.nextLine().strip();
             bookedMatcher = bookDatePattern.matcher(bookDate);
             if (!bookedMatcher.find() || bookDate.length() != 19) {
                 System.out.println("\nAppointment time must be in form 'YYYY-MM-DD HH:MI:SS'");
@@ -747,7 +758,7 @@ public class Frontend {
             while(true) {
                 System.out.print("Enter the dose number: ");
                 try {
-                    dose = Integer.parseInt(scanner.nextLine());
+                    dose = Integer.parseInt(scanner.nextLine().strip());
                 } catch (Exception e) {
                     System.out.println("Dose number must be an integer value.");
                     continue;
